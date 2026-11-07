@@ -275,6 +275,10 @@
                             <input type="text" id="memberMobile" required placeholder="e.g., 918005455291 (Required)">
                         </div>
                         <div class="form-group">
+                            <label>Email Address:</label>
+                            <input type="email" id="memberEmail" placeholder="e.g., name@gmail.com">
+                        </div>
+                        <div class="form-group">
                             <label>Place / City:</label>
                             <input type="text" id="memberPlace">
                         </div>
@@ -372,7 +376,6 @@
 
         const isAdmin = (email.toLowerCase() === "johnjoyraj@gmail.com" && mobile === "8005455291");
         
-        // First load family data to verify mobile in directory if not admin
         try {
             const querySnapshot = await getDocs(collection(db, "familyTree"));
             familyData = [];
@@ -409,7 +412,6 @@
         document.getElementById('appContainer').classList.remove('hidden');
         document.getElementById('userRoleDisplay').textContent = `${currentUser.role} (${currentUser.email})`;
 
-        // Participants and Admin can add followers (+ Add Family Branch)
         document.getElementById('addMemberBtn').classList.remove('hidden');
 
         if(isAdmin) {
@@ -421,38 +423,6 @@
         renderDirectory();
         calculateUpcomingEvents();
         loadFamilyMessages();
-    }
-
-    async function loadFamilyData() {
-        try {
-            const querySnapshot = await getDocs(collection(db, "familyTree"));
-            familyData = [];
-            querySnapshot.forEach((document) => {
-                familyData.push({ id: document.id, ...document.data() });
-            });
-
-            if(familyData.length === 0) {
-                const founderRef = doc(db, "familyTree", "founder-1");
-                const initialFounder = {
-                    name: "Antony Raj",
-                    spouse: "Mercy",
-                    dob: "1955-06-10",
-                    wedding: "1980-05-15",
-                    mobile: "8005455291",
-                    place: "Gorakhpur",
-                    parentId: null
-                };
-                await setDoc(founderRef, initialFounder);
-                familyData.push({ id: "founder-1", ...initialFounder });
-            }
-            updateParentDropdown();
-            renderTree();
-            renderDirectory();
-            calculateUpcomingEvents();
-            loadFamilyMessages();
-        } catch (e) {
-            console.error("Error loading database:", e);
-        }
     }
 
     function updateParentDropdown() {
@@ -475,14 +445,6 @@
 
     function canEditPerson(person) {
         if(currentUser.role === 'Admin') return true;
-        if(!currentUser.linkedMemberId) return false;
-        if(person.id === currentUser.linkedMemberId) return true;
-
-        let curr = person;
-        while(curr && curr.parentId) {
-            if(curr.parentId === currentUser.linkedMemberId) return true;
-            curr = familyData.find(p => p.id === curr.parentId);
-        }
         return false;
     }
 
@@ -498,7 +460,7 @@
         div.innerHTML = `
             <div class="person-info">
                 <h4>${person.name} ${person.spouse ? `& ${person.spouse}` : ''}</h4>
-                <p>📍 ${person.place || 'N/A'} | 📞 ${person.mobile || 'N/A'}</p>
+                <p>📍 ${person.place || 'N/A'} | 📞 ${person.mobile || 'N/A'} ${person.email ? '| ✉️ ' + person.email : ''}</p>
                 <p style="font-size: 0.75rem; color: #888;">DOB: ${person.dob || 'N/A'} | Anniversary: ${person.wedding || 'N/A'}</p>
             </div>
             <div class="action-buttons"></div>
@@ -587,6 +549,7 @@
         document.getElementById('memberDob').value = '';
         document.getElementById('memberWedding').value = '';
         document.getElementById('memberMobile').value = '';
+        document.getElementById('memberEmail').value = '';
         document.getElementById('memberPlace').value = '';
         document.getElementById('formTitle').textContent = "Add New Family Branch";
         document.getElementById('editSection').classList.remove('hidden');
@@ -602,6 +565,7 @@
         document.getElementById('memberDob').value = person.dob || '';
         document.getElementById('memberWedding').value = person.wedding || '';
         document.getElementById('memberMobile').value = person.mobile || '';
+        document.getElementById('memberEmail').value = person.email || '';
         document.getElementById('memberPlace').value = person.place || '';
         document.getElementById('formTitle').textContent = "Edit Family Branch";
         document.getElementById('editSection').classList.remove('hidden');
@@ -628,6 +592,7 @@
             dob: document.getElementById('memberDob').value,
             wedding: document.getElementById('memberWedding').value,
             mobile: mobileVal,
+            email: document.getElementById('memberEmail').value.trim(),
             place: document.getElementById('memberPlace').value,
             parentId: parentId
         };
@@ -679,7 +644,7 @@
                 <div>
                     <h4>${p.name} ${p.spouse ? '& ' + p.spouse : ''}</h4>
                     <p>📍 Place: ${p.place || 'N/A'}</p>
-                    <p>📞 Mobile: ${p.mobile || 'N/A'}</p>
+                    <p>📞 Mobile: ${p.mobile || 'N/A'} ${p.email ? '| ✉️ ' + p.email : ''}</p>
                     <p>🎂 DOB: ${p.dob || 'N/A'} | 💍 Anniversary: ${p.wedding || 'N/A'}</p>
                 </div>
                 <div class="dir-actions"></div>
