@@ -193,14 +193,14 @@
 <!-- Authentication Screen -->
 <div id="authScreen">
     <h2>Raj Family Portal Login</h2>
-    <p style="font-size: 0.85rem; color: #666;">Enter your email and mobile/password to enter.</p>
+    <p style="font-size: 0.85rem; color: #666;">Enter your email and mobile number to enter.</p>
     <div class="form-group">
         <label>Email Address:</label>
-        <input type="email" id="loginEmail" placeholder="e.g., johnjoyraj@gmail.com" value="johnjoyraj@gmail.com">
+        <input type="email" id="loginEmail" placeholder="you@gmail.com">
     </div>
     <div class="form-group">
-        <label>Mobile / Password:</label>
-        <input type="password" id="loginMobile" placeholder="e.g., 8005455291" value="8005455291">
+        <label>Mobile Number:</label>
+        <input type="password" id="loginMobile" placeholder="9876543210">
     </div>
     <button id="loginBtn" class="btn-success" style="width:100%; padding: 10px;">Login / Verify</button>
 </div>
@@ -239,7 +239,7 @@
             <div id="treeView" class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                     <h2>Family Tree & Lineage</h2>
-                    <button id="addMemberBtn" class="btn-success hidden">+ Add Family Branch</button>
+                    <button id="addMemberBtn" class="btn-success hidden">+ Add Family Branch / Follower</button>
                 </div>
                 <div id="familyTree" class="tree-container" style="margin-top: 15px;"></div>
                 
@@ -272,11 +272,11 @@
                         </div>
                         <div class="form-group">
                             <label>Mobile Number (for WhatsApp & Contact):</label>
-                            <input type="text" id="memberMobile" required placeholder="e.g., 918005455291 (Required)">
+                            <input type="text" id="memberMobile" required placeholder="9876543210 (Required)">
                         </div>
                         <div class="form-group">
                             <label>Email Address:</label>
-                            <input type="email" id="memberEmail" placeholder="e.g., name@gmail.com">
+                            <input type="email" id="memberEmail" placeholder="you@gmail.com">
                         </div>
                         <div class="form-group">
                             <label>Place / City:</label>
@@ -370,7 +370,7 @@
         const email = document.getElementById('loginEmail').value.trim();
         const mobile = document.getElementById('loginMobile').value.trim();
         if(!email || !mobile) {
-            alert("Please enter both email and mobile/password.");
+            alert("Please enter both email and mobile number.");
             return;
         }
 
@@ -388,7 +388,11 @@
 
         if(!isAdmin) {
             const cleanEnteredMobile = mobile.replace(/[^0-9]/g, '');
-            const matchedMember = familyData.find(p => p.mobile && p.mobile.replace(/[^0-9]/g, '') === cleanEnteredMobile);
+            const matchedMember = familyData.find(p => 
+                (p.mobile && p.mobile.replace(/[^0-9]/g, '') === cleanEnteredMobile) || 
+                (p.spouseMobile && p.spouseMobile.replace(/[^0-9]/g, '') === cleanEnteredMobile)
+            );
+            
             if(!matchedMember) {
                 alert("Access Denied: The mobile number entered is not found in the family directory database. Please contact the Admin.");
                 return;
@@ -436,16 +440,22 @@
         });
     }
 
+    function getRelationshipLabel(person) {
+        if (!person.parentId) {
+            return "🌳 Founder / Root Lineage";
+        }
+        const parent = familyData.find(p => p.id === person.parentId);
+        if (parent) {
+            return `🔗 Child of ${parent.name} ${parent.spouse ? '& ' + parent.spouse : ''}`;
+        }
+        return "🔗 Family Branch";
+    }
+
     function renderTree() {
         const container = document.getElementById('familyTree');
         container.innerHTML = '';
         const topLevel = familyData.filter(p => !p.parentId);
         topLevel.forEach(m => container.appendChild(createPersonNode(m)));
-    }
-
-    function canEditPerson(person) {
-        if(currentUser.role === 'Admin') return true;
-        return false;
     }
 
     function createPersonNode(person) {
@@ -456,10 +466,12 @@
         
         const cleanMobile = person.mobile ? person.mobile.replace(/[^0-9]/g, '') : '';
         const whatsappUrl = cleanMobile ? `https://wa.me/${cleanMobile}?text=Hello%20${encodeURIComponent(person.name)},%20connecting%20via%20Raj%20Family%20Portal!` : '#';
+        const relationText = getRelationshipLabel(person);
 
         div.innerHTML = `
             <div class="person-info">
                 <h4>${person.name} ${person.spouse ? `& ${person.spouse}` : ''}</h4>
+                <p style="font-weight:600; color:var(--secondary); margin-bottom:4px;">${relationText}</p>
                 <p>📍 ${person.place || 'N/A'} | 📞 ${person.mobile || 'N/A'} ${person.email ? '| ✉️ ' + person.email : ''}</p>
                 <p style="font-size: 0.75rem; color: #888;">DOB: ${person.dob || 'N/A'} | Anniversary: ${person.wedding || 'N/A'}</p>
             </div>
@@ -475,7 +487,7 @@
             actionDiv.appendChild(waBtn);
         }
 
-        if(canEditPerson(person)) {
+        if(currentUser.role === 'Admin') {
             const editBtn = document.createElement('button');
             editBtn.className = 'btn-warning';
             editBtn.textContent = 'Edit';
@@ -551,11 +563,15 @@
         document.getElementById('memberMobile').value = '';
         document.getElementById('memberEmail').value = '';
         document.getElementById('memberPlace').value = '';
-        document.getElementById('formTitle').textContent = "Add New Family Branch";
+        document.getElementById('formTitle').textContent = "Add New Family Branch / Follower";
         document.getElementById('editSection').classList.remove('hidden');
     }
 
     function editMember(id) {
+        if(currentUser.role !== 'Admin') {
+            alert("Permission denied. Only Admin can edit existing records.");
+            return;
+        }
         const person = familyData.find(p => p.id === id);
         if(!person) return;
         document.getElementById('editMemberId').value = person.id;
@@ -584,6 +600,11 @@
         }
 
         const id = document.getElementById('editMemberId').value;
+        if(id && currentUser.role !== 'Admin') {
+            alert("Permission denied. Participants cannot edit existing records.");
+            return;
+        }
+
         const parentId = document.getElementById('memberParentId').value || null;
         
         const memberData = {
@@ -604,10 +625,19 @@
             } else {
                 const newId = "member-" + Date.now();
                 await setDoc(doc(db, "familyTree", newId), memberData);
-                alert("New family branch added successfully!");
+                alert("New family follower/branch added successfully!");
             }
             document.getElementById('editSection').classList.add('hidden');
-            loadFamilyData();
+            
+            const querySnapshot = await getDocs(collection(db, "familyTree"));
+            familyData = [];
+            querySnapshot.forEach((document) => {
+                familyData.push({ id: document.id, ...document.data() });
+            });
+            updateParentDropdown();
+            renderTree();
+            renderDirectory();
+            calculateUpcomingEvents();
         } catch (err) {
             console.error("Save error:", err);
             alert("Error saving record. Check Firestore security rules.");
@@ -623,7 +653,15 @@
             try {
                 await deleteDoc(doc(db, "familyTree", id));
                 alert("Record deleted.");
-                loadFamilyData();
+                const querySnapshot = await getDocs(collection(db, "familyTree"));
+                familyData = [];
+                querySnapshot.forEach((document) => {
+                    familyData.push({ id: document.id, ...document.data() });
+                });
+                updateParentDropdown();
+                renderTree();
+                renderDirectory();
+                calculateUpcomingEvents();
             } catch (err) {
                 console.error("Delete error:", err);
                 alert("Error deleting record.");
@@ -637,12 +675,14 @@
         familyData.forEach(p => {
             const cleanMobile = p.mobile ? p.mobile.replace(/[^0-9]/g, '') : '';
             const whatsappUrl = cleanMobile ? `https://wa.me/${cleanMobile}?text=Hello%20${encodeURIComponent(p.name)},%20connecting%20via%20Raj%20Family%20Portal!` : '#';
+            const relationText = getRelationshipLabel(p);
 
             const card = document.createElement('div');
             card.className = 'person-card';
             card.innerHTML = `
                 <div>
                     <h4>${p.name} ${p.spouse ? '& ' + p.spouse : ''}</h4>
+                    <p style="font-weight:600; color:var(--secondary); margin-bottom:4px;">${relationText}</p>
                     <p>📍 Place: ${p.place || 'N/A'}</p>
                     <p>📞 Mobile: ${p.mobile || 'N/A'} ${p.email ? '| ✉️ ' + p.email : ''}</p>
                     <p>🎂 DOB: ${p.dob || 'N/A'} | 💍 Anniversary: ${p.wedding || 'N/A'}</p>
