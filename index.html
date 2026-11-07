@@ -39,7 +39,6 @@
             margin-bottom: 5px;
         }
 
-        /* Auth Screen */
         #authScreen {
             max-width: 400px;
             margin: 50px auto;
@@ -158,16 +157,16 @@
 <!-- Authentication Screen -->
 <div id="authScreen">
     <h2>Raj Family Portal Login</h2>
-    <p style="font-size: 0.85rem; color: #666;">Enter your registered email and mobile number to continue.</p>
+    <p style="font-size: 0.85rem; color: #666;">Enter your email and mobile/password to enter.</p>
     <div class="form-group">
         <label>Email Address:</label>
-        <input type="email" id="loginEmail" placeholder="e.g., john@gmail.com">
+        <input type="email" id="loginEmail" placeholder="e.g., johnjoyraj@gmail.com" value="johnjoyraj@gmail.com">
     </div>
     <div class="form-group">
-        <label>Mobile Number:</label>
-        <input type="text" id="loginMobile" placeholder="e.g., +91 9876543210">
+        <label>Mobile / Password:</label>
+        <input type="password" id="loginMobile" placeholder="e.g., 8005455291" value="8005455291">
     </div>
-    <button class="btn-success" style="width:100%; padding: 10px;" onclick="handleLogin()">Login / Verify</button>
+    <button class="btn-success" style="width:100%; padding: 10px;" onclick="window.handleLogin()">Login / Verify</button>
 </div>
 
 <!-- Main App Container -->
@@ -183,13 +182,13 @@
             <h3 id="bannerTitle">🎉 Upcoming Family Gathering</h3>
             <p id="bannerDesc">Annual family reunion scheduled for next month. Check profiles for details!</p>
         </div>
-        <button id="editBannerBtn" class="btn-warning hidden" onclick="editBanner()">Edit Banner (Admin)</button>
+        <button id="editBannerBtn" class="btn-warning hidden" onclick="window.editBanner()">Edit Banner (Admin)</button>
     </div>
 
     <!-- Navigation Toggle Buttons -->
     <div class="nav-buttons">
-        <button onclick="switchView('tree')">Family Tree</button>
-        <button onclick="switchView('directory')">Family Members Directory</button>
+        <button onclick="window.switchView('tree')">Family Tree</button>
+        <button onclick="window.switchView('directory')">Family Members Directory</button>
         <button class="btn-danger" onclick="location.reload()">Logout</button>
     </div>
 
@@ -200,7 +199,7 @@
         
         <div id="editSection" class="card hidden" style="margin-top: 20px; border: 1px dashed var(--secondary);">
             <h3 id="formTitle">Edit Your Data / Branch</h3>
-            <form id="memberForm" onsubmit="saveMemberData(event)">
+            <form id="memberForm" onsubmit="window.saveMemberData(event)">
                 <input type="hidden" id="editMemberId">
                 <div class="form-group">
                     <label>Full Name:</label>
@@ -237,7 +236,7 @@
             <div class="form-group">
                 <textarea id="suggestionText" placeholder="Describe the change you would like to suggest..."></textarea>
             </div>
-            <button class="btn-warning" onclick="sendSuggestion()">Submit Suggestion</button>
+            <button class="btn-warning" onclick="window.sendSuggestion()">Submit Suggestion</button>
         </div>
     </div>
 
@@ -249,21 +248,20 @@
     </div>
 </div>
 
-<!-- Firebase SDKs -->
+<!-- Firebase SDKs and Logic -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs, setDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // TODO: Replace with your actual Firebase project configuration credentials
     const firebaseConfig = {
-  apiKey: "AIzaSyDQ3Ab0kDjQ3iY1QHpi_EOK8dV49pB6OKY",
-  authDomain: "raj-family-33299.firebaseapp.com",
-  projectId: "raj-family-33299",
-  storageBucket: "raj-family-33299.firebasestorage.app",
-  messagingSenderId: "423079407237",
-  appId: "1:423079407237:web:6fd4bff388b9f85ff8c3ec",
-  measurementId: "G-NGYQ0E1KNP"
-};
+      apiKey: "AIzaSyDQ3Ab0kDjQ3iY1QHpi_EOK8dV49pB6OKY",
+      authDomain: "raj-family-33299.firebaseapp.com",
+      projectId: "raj-family-33299",
+      storageBucket: "raj-family-33299.firebasestorage.app",
+      messagingSenderId: "423079407237",
+      appId: "1:423079407237:web:6fd4bff388b9f85ff8c3ec",
+      measurementId: "G-NGYQ0E1KNP"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -275,26 +273,27 @@
         const email = document.getElementById('loginEmail').value.trim();
         const mobile = document.getElementById('loginMobile').value.trim();
         if(!email || !mobile) {
-            alert("Please enter both email and mobile number.");
+            alert("Please enter both email and mobile/password.");
             return;
         }
 
-        // Define Admin credential check (e.g., Antony Raj / Admin email)
-        const isAdmin = (email === "johnjoyraj@gmail.com" || email.includes("admin"));
+        // Admin check for johnjoyraj@gmail.com and password 8005455291
+        const isAdmin = (email.toLowerCase() === "johnjoyraj@gmail.com" && mobile === "8005455291");
         
         currentUser = {
             email: email,
             mobile: mobile,
             role: isAdmin ? "Admin" : "Participant",
-            linkedMemberId: isAdmin ? "founder-1" : "id-sample" // Map user to their specific branch line
+            linkedMemberId: isAdmin ? "founder-1" : "id-sample"
         };
 
         document.getElementById('authScreen').classList.add('hidden');
         document.getElementById('appContainer').classList.remove('hidden');
-        document.getElementById('userRoleDisplay.textContent = `${currentUser.role} (${currentUser.email})`;
+        document.getElementById('userRoleDisplay').textContent = `${currentUser.role} (${currentUser.email})`;
 
         if(isAdmin) {
             document.getElementById('editBannerBtn').classList.remove('hidden');
+            document.getElementById('editSection').classList.remove('hidden');
         } else {
             document.getElementById('suggestionBox').classList.remove('hidden');
             document.getElementById('editSection').classList.remove('hidden');
@@ -304,29 +303,29 @@
     }
 
     async function loadFamilyData() {
-        // Fetch from Firestore online database so no data is lost on page refresh
         try {
             const querySnapshot = await getDocs(collection(db, "familyTree"));
             familyData = [];
-            querySnapshot.forEach((doc) => {
-                familyData.push({ id: doc.id, ...doc.data() });
+            querySnapshot.forEach((document) => {
+                familyData.push({ id: document.id, ...document.data() });
             });
 
             if(familyData.length === 0) {
-                // Default Founder seed if database is empty
-                familyData = [{
-                    id: "founder-1",
+                const founderRef = doc(db, "familyTree", "founder-1");
+                const initialFounder = {
                     name: "Antony Raj",
                     spouse: "Mercy",
                     dob: "1955-06-10",
                     wedding: "1980-05-15",
-                    mobile: "+91 9000000001",
+                    mobile: "8005455291",
                     place: "Gorakhpur",
                     parentId: null
-                }];
+                };
+                await setDoc(founderRef, initialFounder);
+                familyData.push({ id: "founder-1", ...initialFounder });
             }
-            renderTree();
-            renderDirectory();
+            window.renderTree();
+            window.renderDirectory();
         } catch (e) {
             console.error("Error loading database:", e);
         }
@@ -348,11 +347,10 @@
                 <p>📍 ${person.place || 'N/A'} | 📞 ${person.mobile || 'N/A'}</p>
             </div>
         `;
-        // Participants can edit only under their own line, Admins can edit anywhere
-        if(currentUser.role === 'Admin' || person.id === currentUser.linkedMemberId) {
+        if(currentUser && (currentUser.role === 'Admin' || person.id === currentUser.linkedMemberId)) {
             const btn = document.createElement('button');
-            btn.textContent = "Edit My Data";
-            btn.onclick = () => populateEditForm(person);
+            btn.textContent = "Edit Data";
+            btn.onclick = () => window.populateEditForm(person);
             div.appendChild(btn);
         }
         return div;
@@ -415,7 +413,7 @@
     }
 
     window.editBanner = function() {
-        if(currentUser.role !== 'Admin') return;
+        if(!currentUser || currentUser.role !== 'Admin') return;
         const title = prompt("New Banner Title:");
         const desc = prompt("New Banner Description:");
         if(title) document.getElementById('bannerTitle').textContent = title;
