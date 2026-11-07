@@ -100,6 +100,14 @@
             gap: 10px;
             border-left: 4px solid var(--secondary);
             border: 1px solid #e2e8f0;
+            margin-bottom: 10px;
+        }
+
+        .child-branch {
+            margin-left: 30px;
+            border-left: 2px dashed #cbd5e1;
+            padding-left: 15px;
+            margin-top: 10px;
         }
 
         .person-info h4 {
@@ -157,7 +165,7 @@
 <!-- Authentication Screen -->
 <div id="authScreen">
     <h2>Raj Family Portal Login</h2>
-    <p style="font-size: 0.85rem; color: #666;">Enter your email and mobile/password to enter.</p>
+    <p style="font-size: 0.85rem; color: #666;">Enter your email and password to enter.</p>
     <div class="form-group">
         <label>Email Address:</label>
         <input type="email" id="loginEmail" placeholder="e.g., johnjoyraj@gmail.com" value="johnjoyraj@gmail.com">
@@ -194,20 +202,30 @@
 
     <!-- View 1: Family Tree -->
     <div id="treeView" class="card">
-        <h2>Family Tree & Lineage</h2>
-        <div id="familyTree" class="tree-container"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <h2>Family Tree & Lineage</h2>
+            <button id="addMemberBtn" class="btn-success hidden" onclick="window.openAddForm()">+ Add Family Branch</button>
+        </div>
+        <div id="familyTree" class="tree-container" style="margin-top: 15px;"></div>
         
+        <!-- Add / Edit Member Modal Form -->
         <div id="editSection" class="card hidden" style="margin-top: 20px; border: 1px dashed var(--secondary);">
-            <h3 id="formTitle">Edit Your Data / Branch</h3>
+            <h3 id="formTitle">Add / Edit Family Branch</h3>
             <form id="memberForm" onsubmit="window.saveMemberData(event)">
                 <input type="hidden" id="editMemberId">
                 <div class="form-group">
+                    <label>Parent / Upper Level Link:</label>
+                    <select id="memberParentId">
+                        <option value="">None (Top Level / Founder)</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Full Name:</label>
-                    <input type="text" id="memberName" required>
+                    <input type="text" id="memberName" required placeholder="e.g., Child Name">
                 </div>
                 <div class="form-group">
                     <label>Spouse / In-Law:</label>
-                    <input type="text" id="memberSpouse">
+                    <input type="text" id="memberSpouse" placeholder="e.g., Spouse Name">
                 </div>
                 <div class="form-group">
                     <label>Date of Birth:</label>
@@ -225,18 +243,11 @@
                     <label>Place / City:</label>
                     <input type="text" id="memberPlace">
                 </div>
-                <button type="submit" class="btn-success">Save Changes</button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-success">Save Branch</button>
+                    <button type="button" class="btn-danger" onclick="window.cancelForm()">Cancel</button>
+                </div>
             </form>
-        </div>
-
-        <!-- Suggestion Box for Participants -->
-        <div id="suggestionBox" class="card hidden" style="margin-top: 20px; background: #fff3cd;">
-            <h3>Send Edit Suggestion to Admin</h3>
-            <p style="font-size:0.85rem;">Participants can submit correction requests for data outside their line.</p>
-            <div class="form-group">
-                <textarea id="suggestionText" placeholder="Describe the change you would like to suggest..."></textarea>
-            </div>
-            <button class="btn-warning" onclick="window.sendSuggestion()">Submit Suggestion</button>
         </div>
     </div>
 
@@ -251,7 +262,7 @@
 <!-- Firebase SDKs and Logic -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, setDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, setDoc, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDQ3Ab0kDjQ3iY1QHpi_EOK8dV49pB6OKY",
@@ -277,7 +288,6 @@
             return;
         }
 
-        // Admin check for johnjoyraj@gmail.com and password 8005455291
         const isAdmin = (email.toLowerCase() === "johnjoyraj@gmail.com" && mobile === "8005455291");
         
         currentUser = {
@@ -293,10 +303,7 @@
 
         if(isAdmin) {
             document.getElementById('editBannerBtn').classList.remove('hidden');
-            document.getElementById('editSection').classList.remove('hidden');
-        } else {
-            document.getElementById('suggestionBox').classList.remove('hidden');
-            document.getElementById('editSection').classList.remove('hidden');
+            document.getElementById('addMemberBtn').classList.remove('hidden');
         }
 
         await loadFamilyData();
@@ -324,109 +331,4 @@
                 await setDoc(founderRef, initialFounder);
                 familyData.push({ id: "founder-1", ...initialFounder });
             }
-            window.renderTree();
-            window.renderDirectory();
-        } catch (e) {
-            console.error("Error loading database:", e);
-        }
-    }
-
-    window.renderTree = function() {
-        const container = document.getElementById('familyTree');
-        container.innerHTML = '';
-        const topLevel = familyData.filter(p => p.parentId === null);
-        topLevel.forEach(m => container.appendChild(createPersonNode(m)));
-    }
-
-    function createPersonNode(person) {
-        const div = document.createElement('div');
-        div.className = 'person-card';
-        div.innerHTML = `
-            <div class="person-info">
-                <h4>${person.name} ${person.spouse ? `& ${person.spouse}` : ''}</h4>
-                <p>📍 ${person.place || 'N/A'} | 📞 ${person.mobile || 'N/A'}</p>
-            </div>
-        `;
-        if(currentUser && (currentUser.role === 'Admin' || person.id === currentUser.linkedMemberId)) {
-            const btn = document.createElement('button');
-            btn.textContent = "Edit Data";
-            btn.onclick = () => window.populateEditForm(person);
-            div.appendChild(btn);
-        }
-        return div;
-    }
-
-    window.populateEditForm = function(person) {
-        document.getElementById('editMemberId').value = person.id;
-        document.getElementById('memberName').value = person.name;
-        document.getElementById('memberSpouse').value = person.spouse || '';
-        document.getElementById('memberDob').value = person.dob || '';
-        document.getElementById('memberWedding').value = person.wedding || '';
-        document.getElementById('memberMobile').value = person.mobile || '';
-        document.getElementById('memberPlace').value = person.place || '';
-    }
-
-    window.saveMemberData = async function(e) {
-        e.preventDefault();
-        const id = document.getElementById('editMemberId').value;
-        if(!id) return;
-
-        const updatedData = {
-            name: document.getElementById('memberName').value,
-            spouse: document.getElementById('memberSpouse').value,
-            dob: document.getElementById('memberDob').value,
-            wedding: document.getElementById('memberWedding').value,
-            mobile: document.getElementById('memberMobile').value,
-            place: document.getElementById('memberPlace').value
-        };
-
-        await updateDoc(doc(db, "familyTree", id), updatedData);
-        alert("Changes saved to online database successfully!");
-        loadFamilyData();
-    }
-
-    window.renderDirectory = function() {
-        const dirList = document.getElementById('directoryList');
-        dirList.innerHTML = '';
-        familyData.forEach(p => {
-            dirList.innerHTML += `
-                <div class="person-card">
-                    <div>
-                        <h4>${p.name} ${p.spouse ? `& ${p.spouse}` : ''}</h4>
-                        <p>📍 Place: ${p.place || 'N/A'}</p>
-                        <p>📞 Mobile: ${p.mobile || 'N/A'}</p>
-                        <p>🎂 DOB: ${p.dob || 'N/A'} | 💍 Anniversary: ${p.wedding || 'N/A'}</p>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    window.switchView = function(view) {
-        if(view === 'tree') {
-            document.getElementById('treeView').classList.remove('hidden');
-            document.getElementById('directoryView').classList.add('hidden');
-        } else {
-            document.getElementById('treeView').classList.add('hidden');
-            document.getElementById('directoryView').classList.remove('hidden');
-        }
-    }
-
-    window.editBanner = function() {
-        if(!currentUser || currentUser.role !== 'Admin') return;
-        const title = prompt("New Banner Title:");
-        const desc = prompt("New Banner Description:");
-        if(title) document.getElementById('bannerTitle').textContent = title;
-        if(desc) document.getElementById('bannerDesc').textContent = desc;
-    }
-
-    window.sendSuggestion = function() {
-        const text = document.getElementById('suggestionText').value;
-        if(!text) return;
-        alert("Your suggestion has been sent to the Admin successfully!");
-        document.getElementById('suggestionText').value = '';
-    }
-</script>
-
-</body>
-</html>
+            updateParentDropdown();
