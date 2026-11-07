@@ -193,7 +193,7 @@
 <!-- Authentication Screen -->
 <div id="authScreen">
     <h2>Raj Family Portal Login</h2>
-    <p style="font-size: 0.85rem; color: #666;">Enter your admin email and password to enter.</p>
+    <p style="font-size: 0.85rem; color: #666;">Enter your email and mobile/password to enter.</p>
     <div class="form-group">
         <label>Email Address:</label>
         <input type="email" id="loginEmail" placeholder="e.g., johnjoyraj@gmail.com" value="johnjoyraj@gmail.com">
@@ -202,7 +202,7 @@
         <label>Mobile / Password:</label>
         <input type="password" id="loginMobile" placeholder="e.g., 8005455291" value="8005455291">
     </div>
-    <button class="btn-success" style="width:100%; padding: 10px;" onclick="window.handleLogin()">Login / Verify</button>
+    <button id="loginBtn" class="btn-success" style="width:100%; padding: 10px;">Login / Verify</button>
 </div>
 
 <!-- Main App Container -->
@@ -212,40 +212,38 @@
         <p>Logged in as: <span id="userRoleDisplay" style="font-weight:bold; color:var(--secondary);"></span></p>
     </header>
 
-    <!-- Banner Option -->
+    <!-- Banner -->
     <div class="event-banner">
         <div>
             <h3 id="bannerTitle">🌳 Raj Family Registry & Connection</h3>
             <p id="bannerDesc">Please log in to review and enter your family branch details so everyone can stay connected.</p>
         </div>
-        <button id="editBannerBtn" class="btn-warning hidden" onclick="window.editBanner()">Edit Banner (Admin)</button>
+        <button id="editBannerBtn" class="btn-warning hidden">Edit Banner (Admin)</button>
     </div>
 
     <!-- Navigation & Action Buttons -->
     <div class="nav-buttons">
-        <button onclick="window.switchView('tree')">Family Tree</button>
-        <button onclick="window.switchView('directory')">Family Members Directory</button>
-        <button class="btn-warning" onclick="window.openMessageModal()">📢 Send Family Message</button>
-        <button class="btn-danger" onclick="location.reload()">Logout</button>
+        <button id="navTree">Family Tree</button>
+        <button id="navDir">Family Members Directory</button>
+        <button id="navMsg" class="btn-warning">📢 Send Family Message</button>
+        <button id="navLogout" class="btn-danger">Logout</button>
     </div>
 
-    <!-- Main Layout with Info Sidebar -->
+    <!-- Main Layout -->
     <div class="main-layout">
-        
-        <!-- Left Content Area -->
         <div>
-            <!-- View 1: Family Tree -->
+            <!-- Tree View -->
             <div id="treeView" class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                     <h2>Family Tree & Lineage</h2>
-                    <button id="addMemberBtn" class="btn-success hidden" onclick="window.openAddForm()">+ Add Family Branch</button>
+                    <button id="addMemberBtn" class="btn-success hidden">+ Add Family Branch</button>
                 </div>
                 <div id="familyTree" class="tree-container" style="margin-top: 15px;"></div>
                 
-                <!-- Add / Edit Member Form -->
+                <!-- Edit Form -->
                 <div id="editSection" class="card hidden" style="margin-top: 20px; border: 1px dashed var(--secondary);">
                     <h3 id="formTitle">Add / Edit Family Branch</h3>
-                    <form id="memberForm" onsubmit="window.saveMemberData(event)">
+                    <form id="memberForm">
                         <input type="hidden" id="editMemberId">
                         <div class="form-group">
                             <label>Parent / Upper Level Link:</label>
@@ -279,13 +277,13 @@
                         </div>
                         <div style="display: flex; gap: 10px;">
                             <button type="submit" class="btn-success">Save Branch</button>
-                            <button type="button" class="btn-danger" onclick="window.cancelForm()">Cancel</button>
+                            <button type="button" id="cancelFormBtn" class="btn-danger">Cancel</button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- View 2: Family Members Directory -->
+            <!-- Directory View -->
             <div id="directoryView" class="card hidden">
                 <h2>Family Members Contact Directory</h2>
                 <p style="font-size: 0.85rem; color: #666;">Browse contact details or chat directly via WhatsApp.</p>
@@ -293,27 +291,21 @@
             </div>
         </div>
 
-        <!-- Right Sidebar: Upcoming Birthdays & Anniversaries -->
+        <!-- Sidebar Events -->
         <div>
             <div class="card">
                 <h3>🎂 Upcoming Birthdays</h3>
-                <div id="upcomingBirthdays">
-                    <p style="font-size: 0.85rem; color: #666;">Loading upcoming birthdays...</p>
-                </div>
+                <div id="upcomingBirthdays"><p style="font-size: 0.85rem; color: #666;">Loading...</p></div>
             </div>
-
             <div class="card">
                 <h3>💍 Upcoming Anniversaries</h3>
-                <div id="upcomingAnniversaries">
-                    <p style="font-size: 0.85rem; color: #666;">Loading upcoming anniversaries...</p>
-                </div>
+                <div id="upcomingAnniversaries"><p style="font-size: 0.85rem; color: #666;">Loading...</p></div>
             </div>
         </div>
-
     </div>
 </div>
 
-<!-- Family Message Modal -->
+<!-- Message Modal -->
 <div id="messageModal" class="card hidden" style="position:fixed; top:20%; left:50%; transform:translate(-50%, -20%); z-index:1000; width:90%; max-width:500px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
     <h3>📢 Broadcast Family Message</h3>
     <p style="font-size: 0.85rem; color: #666;">Send an announcement or greeting to all family members.</p>
@@ -321,8 +313,8 @@
         <textarea id="broadcastMessage" rows="4" placeholder="Type your family message here..."></textarea>
     </div>
     <div style="display:flex; gap:10px;">
-        <button class="btn-success" onclick="window.sendBroadcast()">Post Message</button>
-        <button class="btn-danger" onclick="window.closeMessageModal()">Cancel</button>
+        <button id="sendBroadcastBtn" class="btn-success">Post Message</button>
+        <button id="closeModalBtn" class="btn-danger">Cancel</button>
     </div>
 </div>
 
@@ -347,7 +339,21 @@
     let currentUser = null;
     let familyData = [];
 
-    window.handleLogin = async function() {
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById('loginBtn').addEventListener('click', handleLogin);
+        document.getElementById('navTree').addEventListener('click', () => switchView('tree'));
+        document.getElementById('navDir').addEventListener('click', () => switchView('directory'));
+        document.getElementById('navMsg').addEventListener('click', openMessageModal);
+        document.getElementById('navLogout').addEventListener('click', () => location.reload());
+        document.getElementById('addMemberBtn').addEventListener('click', openAddForm);
+        document.getElementById('cancelFormBtn').addEventListener('click', cancelForm);
+        document.getElementById('memberForm').addEventListener('submit', saveMemberData);
+        document.getElementById('editBannerBtn').addEventListener('click', editBanner);
+        document.getElementById('sendBroadcastBtn').addEventListener('click', sendBroadcast);
+        document.getElementById('closeModalBtn').addEventListener('click', closeMessageModal);
+    });
+
+    async function handleLogin() {
         const email = document.getElementById('loginEmail').value.trim();
         const mobile = document.getElementById('loginMobile').value.trim();
         if(!email || !mobile) {
@@ -370,6 +376,16 @@
         if(isAdmin) {
             document.getElementById('editBannerBtn').classList.remove('hidden');
             document.getElementById('addMemberBtn').classList.remove('hidden');
+        } else {
+            // For participants, find if their mobile matches any member record to let them edit their down-level/branch
+            await loadFamilyData();
+            const matchedMember = familyData.find(p => p.mobile && p.mobile.replace(/[^0-9]/g, '') === mobile.replace(/[^0-9]/g, ''));
+            if(matchedMember) {
+                currentUser.linkedMemberId = matchedMember.id;
+            } else {
+                currentUser.linkedMemberId = null;
+            }
+            return;
         }
 
         await loadFamilyData();
@@ -398,11 +414,12 @@
                 familyData.push({ id: "founder-1", ...initialFounder });
             }
             updateParentDropdown();
-            window.renderTree();
-            window.renderDirectory();
-            window.calculateUpcomingEvents();
+            renderTree();
+            renderDirectory();
+            calculateUpcomingEvents();
         } catch (e) {
             console.error("Error loading database:", e);
+            alert("Error connecting to Firebase database. Check console for details.");
         }
     }
 
@@ -417,11 +434,28 @@
         });
     }
 
-    window.renderTree = function() {
+    function renderTree() {
         const container = document.getElementById('familyTree');
         container.innerHTML = '';
         const topLevel = familyData.filter(p => !p.parentId);
         topLevel.forEach(m => container.appendChild(createPersonNode(m)));
+    }
+
+    // Helper to check if a person is in the logged-in user's down-level or matches their linked ID
+    function canEditPerson(person) {
+        if(currentUser.role === 'Admin') return true;
+        if(!currentUser.linkedMemberId) return false;
+        
+        // Check if person is the linked member themselves or a descendant (down-level)
+        if(person.id === currentUser.linkedMemberId) return true;
+
+        // Recursively check if parentId chain leads back to currentUser.linkedMemberId
+        let curr = person;
+        while(curr && curr.parentId) {
+            if(curr.parentId === currentUser.linkedMemberId) return true;
+            curr = familyData.find(p => p.id === curr.parentId);
+        }
+        return false;
     }
 
     function createPersonNode(person) {
@@ -439,12 +473,36 @@
                 <p>📍 ${person.place || 'N/A'} | 📞 ${person.mobile || 'N/A'}</p>
                 <p style="font-size: 0.75rem; color: #888;">DOB: ${person.dob || 'N/A'} | Anniversary: ${person.wedding || 'N/A'}</p>
             </div>
-            <div class="action-buttons">
-                ${cleanMobile ? `<a href="${whatsappUrl}" target="_blank"><button class="btn-whatsapp">💬 WhatsApp</button></a>` : ''}
-                <button class="btn-warning" onclick="window.editMember('${person.id}')">Edit</button>
-                ${currentUser.role === 'Admin' && person.id !== 'founder-1' ? `<button class="btn-danger" onclick="window.deleteMember('${person.id}')">Delete</button>` : ''}
-            </div>
+            <div class="action-buttons"></div>
         `;
+
+        const actionDiv = div.querySelector('.action-buttons');
+        if(cleanMobile) {
+            const waBtn = document.createElement('button');
+            waBtn.className = 'btn-whatsapp';
+            waBtn.textContent = '💬 WhatsApp';
+            waBtn.onclick = () => window.open(whatsappUrl, '_blank');
+            actionDiv.appendChild(waBtn);
+        }
+
+        // Edit allowed if Admin or if member owns this record/down-level
+        if(canEditPerson(person)) {
+            const editBtn = document.createElement('button');
+            editBtn.className = 'btn-warning';
+            editBtn.textContent = 'Edit';
+            editBtn.onclick = () => editMember(person.id);
+            actionDiv.appendChild(editBtn);
+        }
+
+        // DELETE BUTTON STRICTLY FOR ADMIN ONLY
+        if(currentUser.role === 'Admin') {
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn-danger';
+            delBtn.textContent = 'Delete';
+            delBtn.onclick = () => deleteMember(person.id);
+            actionDiv.appendChild(delBtn);
+        }
+
         wrapper.appendChild(div);
 
         const children = familyData.filter(p => p.parentId === person.id);
@@ -460,7 +518,7 @@
         return wrapper;
     }
 
-    window.calculateUpcomingEvents = function() {
+    function calculateUpcomingEvents() {
         const today = new Date();
         const currentMonth = today.getMonth() + 1;
         const currentDay = today.getDate();
@@ -495,7 +553,7 @@
         document.getElementById('upcomingAnniversaries').innerHTML = anniversariesHTML || '<p style="font-size: 0.85rem; color: #666;">No anniversaries listed for this month.</p>';
     }
 
-    window.openAddForm = function() {
+    function openAddForm() {
         document.getElementById('editMemberId').value = '';
         document.getElementById('memberParentId').value = '';
         document.getElementById('memberName').value = '';
@@ -508,7 +566,7 @@
         document.getElementById('editSection').classList.remove('hidden');
     }
 
-    window.editMember = function(id) {
+    function editMember(id) {
         const person = familyData.find(p => p.id === id);
         if(!person) return;
         document.getElementById('editMemberId').value = person.id;
@@ -523,11 +581,11 @@
         document.getElementById('editSection').classList.remove('hidden');
     }
 
-    window.cancelForm = function() {
+    function cancelForm() {
         document.getElementById('editSection').classList.add('hidden');
     }
 
-    window.saveMemberData = async function(e) {
+    async function saveMemberData(e) {
         e.preventDefault();
         const id = document.getElementById('editMemberId').value;
         const parentId = document.getElementById('memberParentId').value || null;
@@ -542,51 +600,71 @@
             parentId: parentId
         };
 
-        if(id) {
-            await updateDoc(doc(db, "familyTree", id), memberData);
-            alert("Branch updated successfully!");
-        } else {
-            const newId = "member-" + Date.now();
-            await setDoc(doc(db, "familyTree", newId), memberData);
-            alert("New family branch added successfully!");
-        }
-
-        document.getElementById('editSection').classList.add('hidden');
-        loadFamilyData();
-    }
-
-    window.deleteMember = async function(id) {
-        if(confirm("Are you sure you want to delete this member and their branch record?")) {
-            await deleteDoc(doc(db, "familyTree", id));
-            alert("Record deleted.");
+        try {
+            if(id) {
+                await updateDoc(doc(db, "familyTree", id), memberData);
+                alert("Branch updated successfully!");
+            } else {
+                const newId = "member-" + Date.now();
+                await setDoc(doc(db, "familyTree", newId), memberData);
+                alert("New family branch added successfully!");
+            }
+            document.getElementById('editSection').classList.add('hidden');
             loadFamilyData();
+        } catch (err) {
+            console.error("Save error:", err);
+            alert("Error saving record. Check Firestore security rules.");
         }
     }
 
-    window.renderDirectory = function() {
+    async function deleteMember(id) {
+        if(currentUser.role !== 'Admin') {
+            alert("Permission denied. Only Admin can delete records.");
+            return;
+        }
+        if(confirm("Are you sure you want to delete this member and their branch record?")) {
+            try {
+                await deleteDoc(doc(db, "familyTree", id));
+                alert("Record deleted.");
+                loadFamilyData();
+            } catch (err) {
+                console.error("Delete error:", err);
+                alert("Error deleting record.");
+            }
+        }
+    }
+
+    function renderDirectory() {
         const dirList = document.getElementById('directoryList');
         dirList.innerHTML = '';
         familyData.forEach(p => {
             const cleanMobile = p.mobile ? p.mobile.replace(/[^0-9]/g, '') : '';
             const whatsappUrl = cleanMobile ? `https://wa.me/${cleanMobile}?text=Hello%20${encodeURIComponent(p.name)},%20connecting%20via%20Raj%20Family%20Portal!` : '#';
 
-            dirList.innerHTML += `
-                <div class="person-card">
-                    <div>
-                        <h4>${p.name} ${p.spouse ? `& ${p.spouse}` : ''}</h4>
-                        <p>📍 Place: ${p.place || 'N/A'}</p>
-                        <p>📞 Mobile: ${p.mobile || 'N/A'}</p>
-                        <p>🎂 DOB: ${p.dob || 'N/A'} | 💍 Anniversary: ${p.wedding || 'N/A'}</p>
-                    </div>
-                    <div>
-                        ${cleanMobile ? `<a href="${whatsappUrl}" target="_blank"><button class="btn-whatsapp">💬 WhatsApp</button></a>` : ''}
-                    </div>
+            const card = document.createElement('div');
+            card.className = 'person-card';
+            card.innerHTML = `
+                <div>
+                    <h4>${p.name} ${p.spouse ? '& ' + p.spouse : ''}</h4>
+                    <p>📍 Place: ${p.place || 'N/A'}</p>
+                    <p>📞 Mobile: ${p.mobile || 'N/A'}</p>
+                    <p>🎂 DOB: ${p.dob || 'N/A'} | 💍 Anniversary: ${p.wedding || 'N/A'}</p>
                 </div>
+                <div class="dir-actions"></div>
             `;
+            const actionDiv = card.querySelector('.dir-actions');
+            if(cleanMobile) {
+                const waBtn = document.createElement('button');
+                waBtn.className = 'btn-whatsapp';
+                waBtn.textContent = '💬 WhatsApp';
+                waBtn.onclick = () => window.open(whatsappUrl, '_blank');
+                actionDiv.appendChild(waBtn);
+            }
+            dirList.appendChild(card);
         });
     }
 
-    window.switchView = function(view) {
+    function switchView(view) {
         if(view === 'tree') {
             document.getElementById('treeView').classList.remove('hidden');
             document.getElementById('directoryView').classList.add('hidden');
@@ -596,7 +674,7 @@
         }
     }
 
-    window.editBanner = function() {
+    function editBanner() {
         if(!currentUser || currentUser.role !== 'Admin') return;
         const title = prompt("New Banner Title:");
         const desc = prompt("New Banner Description:");
@@ -604,15 +682,15 @@
         if(desc) document.getElementById('bannerDesc').textContent = desc;
     }
 
-    window.openMessageModal = function() {
+    function openMessageModal() {
         document.getElementById('messageModal').classList.remove('hidden');
     }
 
-    window.closeMessageModal = function() {
+    function closeMessageModal() {
         document.getElementById('messageModal').classList.add('hidden');
     }
 
-    window.sendBroadcast = function() {
+    function sendBroadcast() {
         const msg = document.getElementById('broadcastMessage').value.trim();
         if(!msg) {
             alert("Please enter a message.");
@@ -620,7 +698,7 @@
         }
         alert("Family message posted successfully!");
         document.getElementById('broadcastMessage').value = '';
-        window.closeMessageModal();
+        closeMessageModal();
     }
 </script>
 
