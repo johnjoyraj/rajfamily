@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raj Family Community & Genealogy</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #666;
+        }
+
+        /* Banner Section */
+        .event-banner {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .event-banner h3 {
+            margin: 0 0 5px 0;
+        }
+
+        .event-banner p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* Layout Grid for Main & Chat */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .person-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-left: 4px solid var(--secondary);
+            border: 1px solid #e2e8f0;
+        }
+
+        .person-info h4 {
+            margin: 0 0 5px 0;
+            color: var(--primary);
+        }
+
+        .person-info p {
+            margin: 2px 0;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .person-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .children-list {
+            margin-left: 20px;
+            border-left: 2px dashed #cbd5e1;
+            padding-left: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.9; }
+        .btn-success { background-color: var(--success); }
+        .btn-danger { background-color: var(--danger); }
+        .btn-warning { background-color: var(--warning); }
+        .btn-secondary { background-color: #7f8c8d; }
+
+        .badge {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            color: #475569;
+        }
+
+        /* Chat Rooms Styling */
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            height: 250px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: #fafafa;
+            margin-bottom: 10px;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .chat-msg {
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            background: #e1f5fe;
+            padding: 6px 10px;
+            border-radius: 6px;
+            max-width: 85%;
+        }
+
+        .chat-msg.group {
+            background: #e8f5e9;
+        }
+
+        .chat-msg .sender {
+            font-weight: bold;
+            font-size: 0.75rem;
+            color: #0277bd;
+            display: block;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .chat-input-row input {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Raj Family Community & Genealogy</h1>
+        <p>Family Tree, Personal Records, Events & Live Chat</p>
+    </header>
+
+    <!-- Banner Option for Events -->
+    <div class="event-banner">
+        <div>
+            <h3 id="bannerTitle">🎉 Upcoming Family Gathering</h3>
+            <p id="bannerDesc">Annual family reunion scheduled for next month. Check profiles for details!</p>
+        </div>
+        <button class="btn-warning" onclick="editBanner()">Edit Banner</button>
+    </div>
+
+    <div class="main-layout">
+        <!-- Left Column: Family Tree & Form -->
+        <div>
+            <div class="card">
+                <h2>Family Tree & Records</h2>
+                <div id="familyTree" class="tree-container">
+                    <!-- Tree rendered dynamically -->
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 id="formTitle">Add / Update Family Member</h3>
+                <form id="memberForm">
+                    <input type="hidden" id="editMemberId">
+                    <div class="form-group">
+                        <label for="memberName">Full Name:</label>
+                        <input type="text" id="memberName" required placeholder="e.g., David Raj">
+                    </div>
+                    <div class="form-group">
+                        <label for="memberSpouse">Spouse / In-Law:</label>
+                        <input type="text" id="memberSpouse" placeholder="e.g., Priya">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex:1;">
+                            <label for="memberDob">Date of Birth:</label>
+                            <input type="date" id="memberDob">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label for="memberWedding">Wedding Date:</label>
+                            <input type="date" id="memberWedding">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex:1;">
+                            <label for="memberMobile">Mobile Number:</label>
+                            <input type="text" id="memberMobile" placeholder="e.g., +91 9876543210">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label for="memberPlace">Place / City:</label>
+                            <input type="text" id="memberPlace" placeholder="e.g., Gorakhpur">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="relationType">Relation Position:</label>
+                        <select id="relationType">
+                            <option value="child">Child (Add below selected person)</option>
+                            <option value="parent">Parent / Upper Level (Add above selected person)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="relativeSelect">Relative to:</label>
+                        <select id="relativeSelect"></select>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button type="submit" id="submitBtn" class="btn-success">Save Profile</button>
+                        <button type="button" id="cancelBtn" class="btn-secondary" style="display:none;" onclick="resetForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column: Chats -->
+        <div>
+            <!-- Group Chat -->
+            <div class="card">
+                <h3>🌍 Family Group Chat</h3>
+                <div id="groupChatBox" class="chat-box">
+                    <div class="chat-msg group">
+                        <span class="sender">System</span>
+                        Welcome to the Raj Family group chat! Say Hello to everyone.
+                    </div>
+                </div>
+                <div class="chat-input-row">
+                    <input type="text" id="groupChatInput" placeholder="Say Hello to all...">
+                    <button onclick="sendGroupMessage()">Send</button>
+                </div>
+            </div>
+
+            <!-- Direct Chat Drawer/Box -->
+            <div class="card" id="directChatCard" style="border-left: 4px solid var(--success);">
+                <h3 id="directChatTitle">💬 Direct Chat</h3>
+                <p style="font-size: 0.8rem; color: #666; margin-top:0;">Select a member's card and click "Chat" to message them privately.</p>
+                <div id="directChatBox" class="chat-box">
+                    <div class="chat-msg">
+                        <span class="sender">System</span>
+                        No active chat selected.
+                    </div>
+                </div>
+                <div class="chat-input-row">
+                    <input type="text" id="directChatInput" placeholder="Type a message..." disabled>
+                    <button id="sendDirectBtn" onclick="sendDirectMessage()" disabled>Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initial Family Data
+    let familyData = [
+        {
+            id: "founder-1",
+            name: "Antony Raj",
+            spouse: "Mercy",
+            dob: "1955-06-10",
+            wedding: "1980-05-15",
+            mobile: "+91 9000000001",
+            place: "Gorakhpur",
+            parentId: null
+        }
+    ];
+
+    // Chat data storage in memory
+    let groupMessages = [
+        { sender: "Antony Raj", text: "Hello family! Welcome to our new portal." }
+    ];
+    let directMessages = {}; // keyed by person id
+    let activeChatPersonId = null;
+    let activeChatPersonName = "";
+
+    function renderTree() {
+        const treeContainer = document.getElementById('familyTree');
+        treeContainer.innerHTML = '';
+        const topLevel = familyData.filter(p => p.parentId === null);
+
+        if (topLevel.length === 0) {
+            treeContainer.innerHTML = '<p style="text-align: center; color: #776;">No family members found.</p>';
+        } else {
+            topLevel.forEach(member => {
+                treeContainer.appendChild(createPersonNode(member));
+            });
+        }
+        updateRelativeDropdown();
+    }
+
+    function createPersonNode(person) {
+        const div = document.createElement('div');
+        div.className = 'person-card';
+        
+        div.innerHTML = `
+            <div class="person-info">
+                <h4>${person.name} ${person.spouse ? `<span class="badge">Spouse: ${person.spouse}</span>` : ''}</h4>
+                <p>📍 ${person.place || 'N/A'} | 📞 ${person.mobile || 'N/A'}</p>
+                <p>🎂 DOB: ${person.dob || 'N/A'} | 💍 Wed: ${person.wedding || 'N/A'}</p>
+            </div>
+            <div class="person-actions">
+                <button onclick="openChat('${person.id}', '${person.name}')">Chat</button>
+                <button onclick="editMember('${person.id}')">Edit</button>
+                <button class="btn-danger" onclick="deleteMember('${person.id}')">Delete</button>
+            </div>
+        `;
+
+        const children = familyData.filter(p => p.parentId === person.id);
+        if (children.length > 0) {
+            const childrenWrapper = document.createElement('div');
+            childrenWrapper.className = 'children-list';
+            children.forEach(child => {
+                childrenWrapper.appendChild(createPersonNode(child));
+            });
+            div.appendChild(childrenWrapper);
+        }
+        return div;
+    }
+
+    function updateRelativeDropdown() {
+        const select = document.getElementById('relativeSelect');
+        select.innerHTML = '';
+        familyData.forEach(person => {
+            const option = document.createElement('option');
+            option.value = person.id;
+            option.textContent = person.name + (person.spouse ? ` & ${person.spouse}` : '');
+            select.appendChild(option);
+        });
+    }
+
+    document.getElementById('memberForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const editId = document.getElementById('editMemberId').value;
+        const name = document.getElementById('memberName').value.trim();
+        const spouse = document.getElementById('memberSpouse').value.trim();
+        const dob = document.getElementById('memberDob').value;
+        const wedding = document.getElementById('memberWedding').value;
+        const mobile = document.getElementById('memberMobile').value.trim();
+        const place = document.getElementById('memberPlace').value.trim();
+        const relationType = document.getElementById('relationType').value;
+        const relativeId = document.getElementById('relativeSelect').value;
+
+        if (!name) return;
+
+        if (editId) {
+            const person = familyData.find(p => p.id === editId);
+            if (person) {
+                person.name = name;
+                person.spouse = spouse;
+                person.dob = dob;
+                person.wedding = wedding;
+                person.mobile = mobile;
+                person.place = place;
+            }
+        } else {
+            const newId = 'id-' + Date.now();
+            if (!relativeId || familyData.length === 0) {
+                familyData.push({ id: newId, name, spouse, dob, wedding, mobile, place, parentId: null });
+            } else if (relationType === 'child') {
+                familyData.push({ id: newId, name, spouse, dob, wedding, mobile, place, parentId: relativeId });
+            } else if (relationType === 'parent') {
+                const relative = familyData.find(p => p.id === relativeId);
+                const originalParentId = relative ? relative.parentId : null;
+                familyData.push({ id: newId, name, spouse, dob, wedding, mobile, place, parentId: originalParentId });
+                if (relative) relative.parentId = newId;
+            }
+        }
+        resetForm();
+        renderTree();
+    });
+
+    function editMember(id) {
+        const person = familyData.find(p => p.id === id);
+        if (!person) return;
+
+        document.getElementById('editMemberId').value = person.id;
+        document.getElementById('memberName').value = person.name;
+        document.getElementById('memberSpouse').value = person.spouse || '';
+        document.getElementById('memberDob').value = person.dob || '';
+        document.getElementById('memberWedding').value = person.wedding || '';
+        document.getElementById('memberMobile').value = person.mobile || '';
+        document.getElementById('memberPlace').value = person.place || '';
+        document.getElementById('formTitle').textContent = 'Edit Profile: ' + person.name;
+        document.getElementById('submitBtn').textContent = 'Update Profile';
+        document.getElementById('cancelBtn').style.display = 'inline-block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function deleteMember(id) {
+        if (confirm("Delete this member and all nested descendants?")) {
+            const idsToDelete = [id];
+            let finding = true;
+            while(finding) {
+                let added = false;
+                familyData.forEach(p => {
+                    if (idsToDelete.includes(p.parentId) && !idsToDelete.includes(p.id)) {
+                        idsToDelete.push(p.id);
+                        added = true;
+                    }
+                });
+                if (!added) finding = false;
+            }
+            familyData = familyData.filter(p => !idsToDelete.includes(p.id));
+            renderTree();
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('editMemberId').value = '';
+        document.getElementById('memberName').value = '';
+        document.getElementById('memberSpouse').value = '';
+        document.getElementById('memberDob').value = '';
+        document.getElementById('memberWedding').value = '';
+        document.getElementById('memberMobile').value = '';
+        document.getElementById('memberPlace').value = '';
+        document.getElementById('formTitle').textContent = 'Add / Update Family Member';
+        document.getElementById('submitBtn').textContent = 'Save Profile';
+        document.getElementById('cancelBtn').style.display = 'none';
+        updateRelativeDropdown();
+    }
+
+    // Banner Editor
+    function editBanner() {
+        const title = prompt("Enter Banner Title:", document.getElementById('bannerTitle').innerText);
+        const desc = prompt("Enter Banner Description:", document.getElementById('bannerDesc').innerText);
+        if (title) document.getElementById('bannerTitle').innerText = title;
+        if (desc) document.getElementById('bannerDesc').innerText = desc;
+    }
+
+    // Group Chat Functions
+    function sendGroupMessage() {
+        const input = document.getElementById('groupChatInput');
+        const text = input.value.trim();
+        if (!text) return;
+        groupMessages.push({ sender: "Family Member", text: text });
+        input.value = '';
+        renderGroupChat();
+    }
+
+    function renderGroupChat() {
+        const box = document.getElementById('groupChatBox');
+        box.innerHTML = '';
+        groupMessages.forEach(m => {
+            box.innerHTML += `<div class="chat-msg group"><span class="sender">${m.sender}</span>${m.text}</div>`;
+        });
+        box.scrollTop = box.scrollHeight;
+    }
+
+    // Direct Chat Functions
+    function openChat(id, name) {
+        activeChatPersonId = id;
+        activeChatPersonName = name;
+        document.getElementById('directChatTitle').textContent = `💬 Chat with ${name}`;
+        document.getElementById('directChatInput').disabled = false;
+        document.getElementById('sendDirectBtn').disabled = false;
+        renderDirectChat();
+    }
+
+    function sendDirectMessage() {
+        const input = document.getElementById('directChatInput');
+        const text = input.value.trim();
+        if (!text || !activeChatPersonId) return;
+
+        if (!directMessages[activeChatPersonId]) {
+            directMessages[activeChatPersonId] = [];
+        }
+        directMessages[activeChatPersonId].push({ sender: "You", text: text });
+        input.value = '';
+        renderDirectChat();
+    }
+
+    function renderDirectChat() {
+        const box = document.getElementById('directChatBox');
+        box.innerHTML = '';
+        const msgs = directMessages[activeChatPersonId] || [];
+        if (msgs.length === 0) {
+            box.innerHTML = `<div class="chat-msg"><span class="sender">System</span>Start a conversation with ${activeChatPersonName}.</div>`;
+            return;
+        }
+        msgs.forEach(m => {
+            box.innerHTML += `<div class="chat-msg"><span class="sender">${m.sender}</span>${m.text}</div>`;
+        });
+        box.scrollTop = box.scrollHeight;
+    }
+
+    // Initial load
+    renderTree();
+    renderGroupChat();
+</script>
+
+</body>
+</html>
