@@ -372,27 +372,55 @@
 
         const isAdmin = (email.toLowerCase() === "johnjoyraj@gmail.com" && mobile === "8005455291");
         
-        currentUser = {
-            email: email,
-            mobile: mobile,
-            role: isAdmin ? "Admin" : "Participant"
-        };
+        // First load family data to verify mobile in directory if not admin
+        try {
+            const querySnapshot = await getDocs(collection(db, "familyTree"));
+            familyData = [];
+            querySnapshot.forEach((document) => {
+                familyData.push({ id: document.id, ...document.data() });
+            });
+        } catch(e) {
+            console.error(e);
+        }
+
+        if(!isAdmin) {
+            const cleanEnteredMobile = mobile.replace(/[^0-9]/g, '');
+            const matchedMember = familyData.find(p => p.mobile && p.mobile.replace(/[^0-9]/g, '') === cleanEnteredMobile);
+            if(!matchedMember) {
+                alert("Access Denied: The mobile number entered is not found in the family directory database. Please contact the Admin.");
+                return;
+            }
+            currentUser = {
+                email: email,
+                mobile: mobile,
+                role: "Participant",
+                linkedMemberId: matchedMember.id
+            };
+        } else {
+            currentUser = {
+                email: email,
+                mobile: mobile,
+                role: "Admin",
+                linkedMemberId: "founder-1"
+            };
+        }
 
         document.getElementById('authScreen').classList.add('hidden');
         document.getElementById('appContainer').classList.remove('hidden');
         document.getElementById('userRoleDisplay').textContent = `${currentUser.role} (${currentUser.email})`;
 
+        // Participants and Admin can add followers (+ Add Family Branch)
+        document.getElementById('addMemberBtn').classList.remove('hidden');
+
         if(isAdmin) {
             document.getElementById('editBannerBtn').classList.remove('hidden');
-            document.getElementById('addMemberBtn').classList.remove('hidden');
-        } else {
-            await loadFamilyData();
-            const matchedMember = familyData.find(p => p.mobile && p.mobile.replace(/[^0-9]/g, '') === mobile.replace(/[^0-9]/g, ''));
-            currentUser.linkedMemberId = matchedMember ? matchedMember.id : null;
-            return;
         }
 
-        await loadFamilyData();
+        updateParentDropdown();
+        renderTree();
+        renderDirectory();
+        calculateUpcomingEvents();
+        loadFamilyMessages();
     }
 
     async function loadFamilyData() {
