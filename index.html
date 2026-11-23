@@ -3,86 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Portal & Community</title>
+    <title>Family Heritage & Connect Portal</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --success: #27ae60;
-            --danger: #e74c3c;
-            --warning: #f39c12;
+            --primary: #1e3a8a;
+            --primary-dark: #172554;
+            --secondary: #0284c7;
+            --secondary-dark: #0369a1;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
             --whatsapp: #25d366;
-            --background: #f8f9fa;
+            --background: #f8fafc;
             --card-bg: #ffffff;
-            --text: #333333;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--background);
             color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.35rem;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 0 auto;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 16px 40px;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
+        /* Authentication Screen */
         #authScreen {
-            max-width: 400px;
-            margin: 50px auto;
+            max-width: 440px;
+            margin: 60px auto;
             background: var(--card-bg);
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 35px 30px;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
             text-align: center;
+            border-top: 5px solid var(--secondary);
+            border: 1px solid var(--border);
         }
 
+        #authScreen h2 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        /* Banner */
         .event-banner {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: linear-gradient(135deg, #0284c7, #1e3a8a);
             color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
+            padding: 16px 20px;
+            border-radius: 10px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
 
+        .event-banner h3 {
+            margin: 0 0 4px 0;
+            font-size: 1.15rem;
+        }
+
+        .event-banner p {
+            margin: 0;
+            font-size: 0.88rem;
+            opacity: 0.95;
+        }
+
+        /* Navigation Buttons */
         .nav-buttons {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
-            justify-content: center;
+            margin-bottom: 22px;
+            justify-content: flex-start;
             flex-wrap: wrap;
         }
 
         .nav-buttons button {
             background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
+        .nav-buttons button:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .nav-buttons button.active {
+            background-color: var(--secondary);
+            box-shadow: 0 3px 8px rgba(2, 132, 199, 0.35);
+        }
+
+        .nav-buttons button.btn-manual {
+            background-color: #8b5cf6;
+        }
+        .nav-buttons button.btn-manual.active {
+            background-color: #7c3aed;
+        }
+
+        /* Layout Grid */
         .main-layout {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 2.3fr 1fr;
             gap: 20px;
+            align-items: start;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .main-layout {
                 grid-template-columns: 1fr;
             }
@@ -90,262 +170,679 @@
 
         .card {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
             margin-bottom: 20px;
+            border: 1px solid var(--border);
         }
 
         .tree-container, .directory-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
+        /* Person Node Card */
         .person-card {
             background: var(--card-bg);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 16px 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
-            border-left: 4px solid var(--secondary);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 10px;
+            gap: 12px;
+            border-left: 5px solid var(--secondary);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .person-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+        }
+
+        .person-card.founder-card {
+            border-left-color: #f59e0b;
+            background: linear-gradient(to right, #fffbeb, #ffffff);
         }
 
         .child-branch {
-            margin-left: 25px;
-            border-left: 2px dashed #cbd5e1;
-            padding-left: 15px;
+            margin-left: 24px;
+            border-left: 3px dashed #cbd5e1;
+            padding-left: 16px;
             margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .child-branch {
+                margin-left: 12px;
+                padding-left: 10px;
+            }
         }
 
         .person-info h4 {
             margin: 0 0 5px 0;
             color: var(--primary);
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .person-info p {
             margin: 2px 0;
-            font-size: 0.85rem;
-            color: #555;
+            font-size: 0.86rem;
+            color: #475569;
         }
 
         .action-buttons {
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
+        /* Form & Buttons */
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             text-align: left;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.86rem;
+            color: #334155;
         }
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
             box-sizing: border-box;
+            font-size: 0.92rem;
+            font-family: inherit;
+            color: var(--text);
+            background-color: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        @media (max-width: 640px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
         }
 
         button {
             background-color: var(--secondary);
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 7px 14px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.85rem;
-            transition: opacity 0.2s;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
 
-        button:hover { opacity: 0.9; }
+        button:hover { opacity: 0.92; }
         .btn-success { background-color: var(--success); }
         .btn-danger { background-color: var(--danger); }
         .btn-warning { background-color: var(--warning); }
-        .btn-whatsapp { background-color: var(--whatsapp); }
+        .btn-whatsapp { background-color: var(--whatsapp); color: white; }
+        .btn-secondary { background-color: #64748b; }
         .hidden { display: none !important; }
 
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 0.74rem;
+            font-weight: 600;
+        }
+        .badge-primary { background: #dbeafe; color: #1e40af; }
+        .badge-founder { background: #fef3c7; color: #92400e; }
+        .badge-branch { background: #e0e7ff; color: #3730a3; }
+
         .event-item {
-            padding: 8px 0;
-            border-bottom: 1px solid #edf2f7;
-            font-size: 0.85rem;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.87rem;
         }
         .event-item:last-child { border-bottom: none; }
+
+        /* Popup Modal Window for Adding / Editing Details */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 16px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 14px;
+            max-width: 680px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            border: 1px solid var(--border);
+            padding: 28px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.25s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px;
+            margin-bottom: 18px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+            line-height: 1;
+        }
+        .modal-close-btn:hover {
+            color: var(--danger);
+            background: #fee2e2;
+        }
+
+        /* User Manual Styles */
+        .manual-section {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .manual-step {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .manual-step-num {
+            background: var(--secondary);
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .manual-step-content h4 {
+            margin: 0 0 4px 0;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .manual-step-content p {
+            margin: 0;
+            font-size: 0.88rem;
+            color: #475569;
+        }
+
+        .quick-help-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #ede9fe;
+            color: #6d28d9;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .quick-help-pill:hover {
+            background: #ddd6fe;
+        }
     </style>
 </head>
 <body>
 
-<!-- Authentication Screen -->
-<div id="authScreen">
-    <h2>Family Portal Login</h2>
-    <p style="font-size: 0.85rem; color: #666;">Enter your email and mobile number to enter.</p>
-    <div class="form-group">
-        <label>Email Address:</label>
-        <input type="email" id="loginEmail" placeholder="you@gmail.com">
-    </div>
-    <div class="form-group">
-        <label>Mobile Number:</label>
-        <input type="password" id="loginMobile" placeholder="9876543210" maxlength="12">
-    </div>
-    <button id="loginBtn" class="btn-success" style="width:100%; padding: 10px;">Login / Verify</button>
-</div>
-
-<!-- Main App Container -->
-<div id="appContainer" class="container hidden">
-    <header>
-        <h1>Family Portal & Community</h1>
-        <p>Logged in as: <span id="userRoleDisplay" style="font-weight:bold; color:var(--secondary);"></span></p>
-    </header>
-
-    <!-- Banner -->
-    <div class="event-banner">
-        <div>
-            <h3 id="bannerTitle">🌳 Family Registry & Connection</h3>
-            <p id="bannerDesc">Stay connected with your family branch details, upcoming events, and live updates.</p>
-        </div>
-    </div>
-
-    <!-- Navigation & Action Buttons -->
-    <div class="nav-buttons">
-        <button id="navTree">Family Tree</button>
-        <button id="navDir">Family Members Directory</button>
-        <button id="navMsg" class="btn-warning">📢 Live Message Board</button>
-        <button id="navLogout" class="btn-danger">Logout</button>
-    </div>
-
-    <!-- Main Layout -->
-    <div class="main-layout">
-        <div>
-            <!-- Tree View -->
-            <div id="treeView" class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                    <h2>Family Tree & Lineage</h2>
-                    <button id="addMemberBtn" class="btn-success hidden">+ Add Family Branch / Follower</button>
-                </div>
-                <div id="familyTree" class="tree-container" style="margin-top: 15px;"></div>
-                
-                <!-- Edit Form -->
-                <div id="editSection" class="card hidden" style="margin-top: 20px; border: 1px dashed var(--secondary);">
-                    <h3 id="formTitle">Add / Edit Family Branch</h3>
-                    <form id="memberForm">
-                        <input type="hidden" id="editMemberId">
-                        <div class="form-group">
-                            <label>Parent / Upper Level Link:</label>
-                            <select id="memberParentId">
-                                <option value="">None (Top Level / Founder)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Full Name:</label>
-                            <input type="text" id="memberName" required placeholder="e.g., Member Name">
-                        </div>
-                        <div class="form-group">
-                            <label>Primary Mobile Number (10 digits):</label>
-                            <input type="text" id="memberMobile" required placeholder="9876543210" pattern="[0-9]{10,12}" title="Enter a valid 10 to 12 digit mobile number">
-                        </div>
-                        <div class="form-group">
-                            <label>Spouse / In-Law Name:</label>
-                            <input type="text" id="memberSpouse" placeholder="e.g., Spouse Name">
-                        </div>
-                        <div class="form-group">
-                            <label>Spouse Mobile Number (Optional):</label>
-                            <input type="text" id="memberSpouseMobile" placeholder="9876543210" pattern="[0-9]{0,12}" title="Enter valid mobile number">
-                        </div>
-                        <div class="form-group">
-                            <label>Child Birth Sequence / Order (e.g. 1 for 1st child):</label>
-                            <input type="number" id="memberSequence" placeholder="1" min="1" value="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Date of Birth:</label>
-                            <input type="date" id="memberDob">
-                        </div>
-                        <div class="form-group">
-                            <label>Wedding Date / Anniversary:</label>
-                            <input type="date" id="memberWedding">
-                        </div>
-                        <div class="form-group">
-                            <label>Email Address:</label>
-                            <input type="email" id="memberEmail" placeholder="you@gmail.com">
-                        </div>
-                        <div class="form-group">
-                            <label>Place / City:</label>
-                            <input type="text" id="memberPlace" placeholder="e.g., Gorakhpur">
-                        </div>
-                        <div class="form-group">
-                            <label>Bio & Background:</label>
-                            <textarea id="memberBio" rows="3" placeholder="What are they doing, where they live, what their children do, prayer requests..."></textarea>
-                            <small style="color: #666; font-size: 0.75rem; display: block; margin-top: 3px;">💡 Include work, residence, children's activities, and prayer requests.</small>
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button type="submit" class="btn-success">Save Branch</button>
-                            <button type="button" id="cancelFormBtn" class="btn-danger">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Directory View -->
-            <div id="directoryView" class="card hidden">
-                <h2>Family Members Contact Directory</h2>
-                <p style="font-size: 0.85rem; color: #666;">Browse contact details or chat directly via WhatsApp.</p>
-                <div id="directoryList" class="directory-container"></div>
-            </div>
-
-            <!-- Message Board View -->
-            <div id="messageBoardView" class="card hidden">
-                <h2>📢 Live Family Message Board</h2>
-                <p style="font-size: 0.85rem; color: #666;">Post announcements or greetings visible to all family members in real time.</p>
-                
-                <div class="form-group" style="margin-top:15px;">
-                    <textarea id="broadcastMessage" rows="3" placeholder="Type your message to the family..."></textarea>
-                </div>
-                <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
-                    <button id="sendBroadcastBtn" class="btn-success">Post to Message Board</button>
-                    <a id="whatsappShareBtn" href="https://chat.whatsapp.com/EReMxxYP82JG5t2EShzw99?s=cl&p=a&iam=2" target="_blank"><button type="button" class="btn-whatsapp">💬 Open WhatsApp Group</button></a>
-                </div>
-
-                <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
-                <h3>Recent Family Messages</h3>
-                <div id="messageBoardFeed" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
-                    <p style="font-size:0.85rem; color:#666;">Loading messages...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sidebar Events -->
-        <div>
-            <div class="card">
-                <h3>🎂 Upcoming Birthdays</h3>
-                <div id="upcomingBirthdays"><p style="font-size: 0.85rem; color: #666;">Loading...</p></div>
-            </div>
-            <div class="card">
-                <h3>💍 Upcoming Anniversaries</h3>
-                <div id="upcomingAnniversaries"><p style="font-size: 0.85rem; color: #666;">Loading...</p></div>
-            </div>
-        </div>
+<!-- Top Navigation Bar -->
+<div class="navbar">
+    <h1>🌳 Family Portal & Community</h1>
+    <div class="nav-right">
+        <span id="userRoleDisplay" style="font-size: 0.85rem; color: #bfdbfe; font-weight: 500;"></span>
+        <button id="navHelpBtnTop" type="button" class="btn-manual" style="padding: 5px 12px; font-size: 0.8rem;">📘 User Manual</button>
+        <button id="navLogoutTop" type="button" class="btn-danger hidden" style="padding: 5px 12px; font-size: 0.8rem;">Logout</button>
     </div>
 </div>
 
-<!-- Firebase SDKs and Logic -->
+<div class="container">
+
+    <!-- Authentication Screen -->
+    <div id="authScreen">
+        <h2>Family Heritage Portal</h2>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 22px;">
+            Enter your email and registered mobile number to enter the multi-generational family portal.
+        </p>
+        <div class="form-group">
+            <label for="loginEmail">Email Address:</label>
+            <input type="email" id="loginEmail" placeholder="you@gmail.com" required>
+        </div>
+        <div class="form-group">
+            <label for="loginMobile">Mobile Number (Login Password):</label>
+            <input type="password" id="loginMobile" placeholder="e.g. 9876543210" maxlength="12" required>
+        </div>
+        <button id="loginBtn" class="btn-success" style="width:100%; padding: 11px; font-size: 0.95rem; margin-top: 8px;">
+            Login / Verify Access
+        </button>
+
+        <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);">
+            <a href="javascript:void(0)" id="authHelpLink" class="quick-help-pill">
+                📘 Need help? Read the Simple User Manual
+            </a>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="appContainer" class="hidden">
+
+        <!-- Welcome Banner -->
+        <div class="event-banner">
+            <div>
+                <h3 id="bannerTitle">🌳 Multi-Generational Family Registry & Lineage</h3>
+                <p id="bannerDesc">Connecting all generations, branches, and distributed family groups across regions.</p>
+            </div>
+            <div>
+                <button id="bannerAddMemberBtn" class="btn-success" style="padding: 8px 16px; font-size: 0.9rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                    + Add Family Member
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button id="navTree" class="active">🌳 Family Tree</button>
+            <button id="navDir">📖 Members Directory</button>
+            <button id="navMsg" class="btn-warning">📢 Live Message Board</button>
+            <button id="navManual" class="btn-manual">📘 User Manual</button>
+            <button id="navLogout" class="btn-danger">Logout</button>
+        </div>
+
+        <!-- Main Layout (Left: Dynamic View, Right: Sidebar) -->
+        <div class="main-layout">
+            <div>
+                <!-- Tree View -->
+                <div id="treeView" class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                        <div>
+                            <h2 style="margin: 0; color: var(--primary);">Family Tree & Lineage</h2>
+                            <p style="margin: 3px 0 0 0; font-size: 0.85rem; color: var(--text-muted);">
+                                Click <b>"Show Branch"</b> to expand children or <b>"Hide Branch"</b> to collapse.
+                            </p>
+                        </div>
+                        <button id="addMemberBtn" class="btn-success" style="padding: 8px 16px;">
+                            + Add Family Member
+                        </button>
+                    </div>
+
+                    <div id="familyTree" class="tree-container" style="margin-top: 15px;">
+                        <p style="font-size:0.88rem; color:var(--text-muted);">Loading family lineage tree...</p>
+                    </div>
+                </div>
+
+                <!-- Directory View -->
+                <div id="directoryView" class="card hidden">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                        <div>
+                            <h2 style="margin: 0; color: var(--primary);">Family Members Contact Directory</h2>
+                            <p style="margin: 3px 0 0 0; font-size: 0.85rem; color: var(--text-muted);">
+                                Browse contact details or connect directly with members on WhatsApp.
+                            </p>
+                        </div>
+                        <button id="dirAddMemberBtn" class="btn-success" style="padding: 8px 16px;">
+                            + Add Family Member
+                        </button>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <input type="text" id="dirSearchInput" placeholder="🔍 Search by member name, spouse, city, or phone number..." style="padding: 10px 14px; font-size: 0.95rem;">
+                    </div>
+
+                    <div id="directoryList" class="directory-container"></div>
+                </div>
+
+                <!-- Live Message Board View -->
+                <div id="messageBoardView" class="card hidden">
+                    <h2 style="margin-top:0; color: var(--primary);">📢 Live Family Community Board</h2>
+                    <p style="font-size: 0.88rem; color: var(--text-muted);">
+                        Post family updates, achievements, greetings, or prayer requests visible to all members in real time.
+                    </p>
+                    
+                    <div class="form-group" style="margin-top:16px;">
+                        <textarea id="broadcastMessage" rows="3" placeholder="Write a message, announcement, or prayer request for the family..."></textarea>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+                        <button id="sendBroadcastBtn" class="btn-success">Post to Message Board</button>
+                        <a id="whatsappShareBtn" href="https://chat.whatsapp.com/EReMxxYP82JG5t2EShzw99?s=cl&p=a&iam=2" target="_blank" style="text-decoration:none;">
+                            <button type="button" class="btn-whatsapp">💬 Open Family WhatsApp Group</button>
+                        </a>
+                    </div>
+
+                    <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
+                    <h3 style="color: var(--primary); margin-bottom: 12px;">Recent Family Messages</h3>
+                    <div id="messageBoardFeed" style="max-height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                        <p style="font-size:0.85rem; color:var(--text-muted);">Loading messages...</p>
+                    </div>
+                </div>
+
+                <!-- User Manual View -->
+                <div id="userManualView" class="card hidden">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:18px;">
+                        <div>
+                            <h2 style="margin:0; color: var(--primary);">📘 Simple User Manual & Guide</h2>
+                            <p style="margin:3px 0 0 0; font-size:0.88rem; color:var(--text-muted);">
+                                Step-by-step guidance on how to use every feature of the Family Portal.
+                            </p>
+                        </div>
+                        <button onclick="switchView('tree')" class="btn-secondary" style="padding: 6px 12px;">
+                            ← Back to Family Tree
+                        </button>
+                    </div>
+
+                    <div class="manual-section">
+                        <div class="manual-step">
+                            <div class="manual-step-num">1</div>
+                            <div class="manual-step-content">
+                                <h4>How to Log In (पोर्टल में प्रवेश कैसे करें)</h4>
+                                <p>Enter your <b>Email</b> and <b>Mobile Number</b> on the login screen. If your mobile number is already recorded in the family directory, you will be verified immediately. Super Admin can manage all records.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section">
+                        <div class="manual-step">
+                            <div class="manual-step-num">2</div>
+                            <div class="manual-step-content">
+                                <h4>Viewing the Family Tree (फैमिली ट्री कैसे देखें)</h4>
+                                <p>The tree shows ancestral roots at the top. For any person with children, click the yellow <b>"📁 Show Branch"</b> button to expand their children. Click <b>"📂 Hide Branch"</b> anytime to collapse and keep the screen clean.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section">
+                        <div class="manual-step">
+                            <div class="manual-step-num">3</div>
+                            <div class="manual-step-content">
+                                <h4>Adding a New Family Member or Baby (नया सदस्य या बच्चा कैसे जोड़ें)</h4>
+                                <p>Click the green <b>"+ Add Family Member"</b> button at the top of the Family Tree or Directory. A popup window will appear right on your screen. Select the <b>Parent / Upper Level Link</b> from the dropdown, enter the Full Name, Mobile Number, Birth Date, and Sequence Order (1 for 1st child, 2 for 2nd child), then click <b>"Save Family Member"</b>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section">
+                        <div class="manual-step">
+                            <div class="manual-step-num">4</div>
+                            <div class="manual-step-content">
+                                <h4>Updating or Editing Details (जानकारी कैसे सुधारें)</h4>
+                                <p>Find your name or your child's name in the Family Tree or Directory. Click the orange <b>"Edit"</b> button on that card. The popup window will open with all details filled in. Update the information (new mobile number, wedding date, city, bio) and click <b>"Save Family Member"</b>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section">
+                        <div class="manual-step">
+                            <div class="manual-step-num">5</div>
+                            <div class="manual-step-content">
+                                <h4>Direct WhatsApp Chat (व्हाट्सएप पर बात करें)</h4>
+                                <p>Every card has a green <b>"💬 WhatsApp"</b> button for both the member and their spouse. Tapping it opens a direct WhatsApp chat window with a friendly connection greeting. You can also join the main Family WhatsApp Group via the Live Message Board.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section">
+                        <div class="manual-step">
+                            <div class="manual-step-num">6</div>
+                            <div class="manual-step-content">
+                                <h4>Using the Live Community Message Board (मैसेज बोर्ड का उपयोग)</h4>
+                                <p>Switch to <b>"📢 Live Message Board"</b> to share announcements, wedding news, birthday wishes, or prayer requests. Messages appear immediately for all family members.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section">
+                        <div class="manual-step">
+                            <div class="manual-step-num">7</div>
+                            <div class="manual-step-content">
+                                <h4>Birthdays & Anniversaries (जन्मदिन और सालगिरह)</h4>
+                                <p>Check the right sidebar to see all upcoming birthdays and wedding anniversaries happening this month. Never miss a family celebration!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar (Upcoming Events & Quick Links) -->
+            <div>
+                <div class="card" style="border-top: 4px solid var(--secondary);">
+                    <h3 style="margin-top:0; color: var(--primary); display:flex; align-items:center; gap:6px;">
+                        🎂 Upcoming Birthdays
+                    </h3>
+                    <div id="upcomingBirthdays">
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Loading birthdays...</p>
+                    </div>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--warning);">
+                    <h3 style="margin-top:0; color: var(--primary); display:flex; align-items:center; gap:6px;">
+                        💍 Upcoming Anniversaries
+                    </h3>
+                    <div id="upcomingAnniversaries">
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Loading anniversaries...</p>
+                    </div>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #f0fdf4, #ffffff); border-left: 4px solid var(--success);">
+                    <h4 style="margin:0 0 6px 0; color: var(--success); font-size: 0.95rem;">💬 Family WhatsApp Community</h4>
+                    <p style="margin:0 0 10px 0; font-size:0.83rem; color:#475569;">
+                        Connect with the larger family circle in the official WhatsApp group.
+                    </p>
+                    <a href="https://chat.whatsapp.com/EReMxxYP82JG5t2EShzw99?s=cl&p=a&iam=2" target="_blank" style="text-decoration:none;">
+                        <button type="button" class="btn-whatsapp" style="width:100%; padding: 8px;">
+                            💬 Join Family Group
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================= -->
+<!-- POPUP MODAL WINDOW FOR ADDING / EDITING FAMILY MEMBER PROFILE     -->
+<!-- (Appears front-and-center, NOT at the bottom of the page)         -->
+<!-- ================================================================= -->
+<div id="memberModalOverlay" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="formTitle">Add New Family Member / Branch</h3>
+            <button type="button" class="modal-close-btn" id="closeModalCrossBtn" title="Close">&times;</button>
+        </div>
+
+        <form id="memberForm">
+            <input type="hidden" id="editMemberId">
+
+            <div class="form-group">
+                <label for="memberParentId">🔗 Parent / Ancestor Link (माता-पिता / पूर्वज):</label>
+                <select id="memberParentId">
+                    <option value="">None (Top Level / Root Lineage)</option>
+                </select>
+                <small style="color:var(--text-muted); font-size:0.75rem;">Select the parent under whom this person will appear in the tree.</small>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="memberName">Full Name (पूरा नाम) *:</label>
+                    <input type="text" id="memberName" required placeholder="e.g., Antony Joseph">
+                </div>
+                <div class="form-group">
+                    <label for="memberGender">Gender (लिंग):</label>
+                    <select id="memberGender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="memberMobile">Primary Mobile Number * (10-12 digits):</label>
+                    <input type="tel" id="memberMobile" required placeholder="e.g. 9876543210" pattern="[0-9]{10,12}" title="Enter a valid 10 to 12 digit mobile number">
+                    <small style="color:var(--text-muted); font-size:0.75rem;">Used for login verification & direct WhatsApp chats.</small>
+                </div>
+                <div class="form-group">
+                    <label for="memberEmail">Email Address (Optional):</label>
+                    <input type="email" id="memberEmail" placeholder="e.g., member@gmail.com">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="memberSpouse">Spouse Name (जीवनसाथी का नाम):</label>
+                    <input type="text" id="memberSpouse" placeholder="e.g., Spouse Full Name">
+                </div>
+                <div class="form-group">
+                    <label for="memberSpouseMobile">Spouse Mobile Number (Optional):</label>
+                    <input type="tel" id="memberSpouseMobile" placeholder="e.g. 9876543210" pattern="[0-9]{0,12}">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="memberDob">Date of Birth (जन्म तिथि):</label>
+                    <input type="date" id="memberDob">
+                </div>
+                <div class="form-group">
+                    <label for="memberWedding">Wedding Anniversary Date (शादी की सालगिरह):</label>
+                    <input type="date" id="memberWedding">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="memberSequence">Child Birth Sequence / Order (जन्म क्रम):</label>
+                    <input type="number" id="memberSequence" placeholder="1" min="1" value="1">
+                    <small style="color:var(--text-muted); font-size:0.75rem;">Enter 1 for 1st child, 2 for 2nd child, etc.</small>
+                </div>
+                <div class="form-group">
+                    <label for="memberPlace">Current City / Location (वर्तमान शहर):</label>
+                    <input type="text" id="memberPlace" placeholder="e.g., Gorakhpur, Kerala, Delhi...">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="memberNative">Native Place / Root (पैतृक स्थान):</label>
+                    <input type="text" id="memberNative" placeholder="e.g., Kerala">
+                </div>
+                <div class="form-group">
+                    <label for="memberOccupation">Occupation / Profession (व्यवसाय / पेशा):</label>
+                    <input type="text" id="memberOccupation" placeholder="e.g., Engineering, Business, Teacher...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="memberBio">Bio & Background (कार्य, बच्चे, प्रार्थना निवेदन):</label>
+                <textarea id="memberBio" rows="3" placeholder="Share background details, what children do, where family resides, prayer requests..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 18px; justify-content: flex-end;">
+                <button type="button" id="cancelFormBtn" class="btn-secondary" style="padding: 9px 18px;">
+                    Cancel
+                </button>
+                <button type="submit" id="saveMemberBtn" class="btn-success" style="padding: 9px 22px;">
+                    💾 Save Family Member
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================================================================= -->
+<!-- FIREBASE SDKs AND FULL APPLICATION LOGIC                          -->
+<!-- ================================================================= -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs, setDoc, doc, updateDoc, deleteDoc, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // Firebase Cloud configuration (Pre-configured project backend)
     const firebaseConfig = {
       apiKey: "AIzaSyDQ3Ab0kDjQ3iY1QHpi_EOK8dV49pB6OKY",
       authDomain: "raj-family-33299.firebaseapp.com",
@@ -363,23 +860,55 @@
     let familyData = [];
 
     document.addEventListener("DOMContentLoaded", () => {
+        // Auth events
         document.getElementById('loginBtn').addEventListener('click', handleLogin);
+        document.getElementById('navLogout').addEventListener('click', () => location.reload());
+        document.getElementById('navLogoutTop').addEventListener('click', () => location.reload());
+
+        // Nav switches
         document.getElementById('navTree').addEventListener('click', () => switchView('tree'));
         document.getElementById('navDir').addEventListener('click', () => switchView('directory'));
         document.getElementById('navMsg').addEventListener('click', () => switchView('messageBoard'));
-        document.getElementById('navLogout').addEventListener('click', () => location.reload());
-        document.getElementById('addMemberBtn').addEventListener('click', openAddForm);
-        document.getElementById('cancelFormBtn').addEventListener('click', cancelForm);
+        document.getElementById('navManual').addEventListener('click', () => switchView('userManual'));
+        document.getElementById('navHelpBtnTop').addEventListener('click', () => switchView('userManual'));
+        document.getElementById('authHelpLink').addEventListener('click', () => {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('appContainer').classList.remove('hidden');
+            switchView('userManual');
+        });
+
+        // Add Member popup triggers
+        document.getElementById('addMemberBtn').addEventListener('click', () => openMemberModal());
+        document.getElementById('bannerAddMemberBtn').addEventListener('click', () => openMemberModal());
+        document.getElementById('dirAddMemberBtn').addEventListener('click', () => openMemberModal());
+
+        // Modal close buttons
+        document.getElementById('closeModalCrossBtn').addEventListener('click', closeMemberModal);
+        document.getElementById('cancelFormBtn').addEventListener('click', closeMemberModal);
+        document.getElementById('memberModalOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'memberModalOverlay') closeMemberModal();
+        });
+
+        // Form submit
         document.getElementById('memberForm').addEventListener('submit', saveMemberData);
-        document.getElementById('editBannerBtn').addEventListener('click', editBanner);
+
+        // Live broadcast post
         document.getElementById('sendBroadcastBtn').addEventListener('click', sendBroadcast);
+
+        // Directory search filter
+        document.getElementById('dirSearchInput').addEventListener('input', renderDirectory);
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeMemberModal();
+        });
     });
 
     async function handleLogin() {
         const email = document.getElementById('loginEmail').value.trim();
         const mobile = document.getElementById('loginMobile').value.trim();
         if(!email || !mobile) {
-            alert("Please enter both email and mobile number.");
+            alert("Please enter both email address and mobile number.");
             return;
         }
 
@@ -392,7 +921,32 @@
                 familyData.push({ id: document.id, ...document.data() });
             });
         } catch(e) {
-            console.error(e);
+            console.error("Firestore read error:", e);
+        }
+
+        // Auto-seed initial founder root if the tree is currently empty
+        if(familyData.length === 0) {
+            const initialRoot = {
+                name: "Antony Joseph",
+                spouse: "Mercy",
+                gender: "Male",
+                mobile: "8005455291",
+                email: "antony@familyroots.org",
+                dob: "1955-06-10",
+                wedding: "1980-05-15",
+                native: "Kerala",
+                place: "Gorakhpur, UP",
+                occupation: "Senior Patriarch",
+                bio: "Family patriarch and founder of Family registry in Gorakhpur.",
+                parentId: null,
+                sequence: 1
+            };
+            try {
+                await setDoc(doc(db, "familyTree", "founder-1"), initialRoot);
+                familyData.push({ id: "founder-1", ...initialRoot });
+            } catch(e) {
+                console.warn("Could not seed initial root:", e);
+            }
         }
 
         if(!isAdmin) {
@@ -403,7 +957,7 @@
             );
             
             if(!matchedMember) {
-                alert("Access Denied: The mobile number entered is not found in the family directory database. Please contact the Admin.");
+                alert("Access Denied: The mobile number entered is not yet recorded in the family directory. Please contact your family admin to add your number.");
                 return;
             }
             currentUser = {
@@ -416,16 +970,16 @@
             currentUser = {
                 email: email,
                 mobile: mobile,
-                role: "Admin",
+                role: "Super Admin",
                 linkedMemberId: "founder-1"
             };
         }
 
+        // Show main app
         document.getElementById('authScreen').classList.add('hidden');
         document.getElementById('appContainer').classList.remove('hidden');
-        document.getElementById('userRoleDisplay').textContent = `${currentUser.role} (${currentUser.email})`;
-
-        document.getElementById('addMemberBtn').classList.remove('hidden');
+        document.getElementById('navLogoutTop').classList.remove('hidden');
+        document.getElementById('userRoleDisplay').textContent = `${currentUser.role} • ${currentUser.email}`;
 
         updateParentDropdown();
         renderTree();
@@ -436,18 +990,18 @@
 
     function updateParentDropdown() {
         const select = document.getElementById('memberParentId');
-        select.innerHTML = '<option value="">None (Top Level / Founder)</option>';
+        select.innerHTML = '<option value="">None (Top Level / Root Lineage)</option>';
         familyData.forEach(p => {
             const opt = document.createElement('option');
             opt.value = p.id;
-            opt.textContent = `${p.name} ${p.spouse ? '& ' + p.spouse : ''}`;
+            opt.textContent = `${p.name} ${p.spouse ? '& ' + p.spouse : ''} (${p.place || 'Family'})`;
             select.appendChild(opt);
         });
     }
 
     function getRelationshipLabel(person) {
         if (!person.parentId) {
-            return "🌳 Founder / Root Lineage";
+            return "🌳 Root Lineage / Founder";
         }
         const parent = familyData.find(p => p.id === person.parentId);
         if (parent) {
@@ -456,9 +1010,10 @@
         return "🔗 Family Branch";
     }
 
-    // Participants can edit their own record and their descendants only
+    // Participants can edit their own record and their descendants
     function canEditPerson(person) {
-        if(currentUser.role === 'Admin') return true;
+        if(!currentUser) return false;
+        if(currentUser.role === 'Super Admin' || currentUser.role === 'Admin') return true;
         if(!currentUser.linkedMemberId) return false;
         
         let curr = person;
@@ -472,7 +1027,13 @@
     function renderTree() {
         const container = document.getElementById('familyTree');
         container.innerHTML = '';
-        const topLevel = familyData.filter(p => !p.parentId);
+        const topLevel = familyData.filter(p => !p.parentId).sort((a, b) => (a.sequence || 1) - (b.sequence || 1));
+        
+        if(topLevel.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-muted); padding:10px;">No family members recorded yet. Click "+ Add Family Member" above to create the first entry!</p>';
+            return;
+        }
+
         topLevel.forEach(m => container.appendChild(createPersonNode(m)));
     }
 
@@ -480,31 +1041,38 @@
         const wrapper = document.createElement('div');
         
         const div = document.createElement('div');
-        div.className = 'person-card';
+        div.className = 'person-card' + (!person.parentId ? ' founder-card' : '');
         
         const cleanMobile = person.mobile ? person.mobile.replace(/[^0-9]/g, '') : '';
         const cleanSpouseMobile = person.spouseMobile ? person.spouseMobile.replace(/[^0-9]/g, '') : '';
 
-        const whatsappUrl = cleanMobile ? `https://wa.me/${cleanMobile}?text=Hello%20${encodeURIComponent(person.name)},%20connecting%20via%20Raj%20Family%20Portal!` : '#';
-        const spouseWhatsappUrl = cleanSpouseMobile ? `https://wa.me/${cleanSpouseMobile}?text=Hello%20${encodeURIComponent(person.spouse)},%20connecting%20via%20Raj%20Family%20Portal!` : '#';
+        const whatsappUrl = cleanMobile ? `https://wa.me/${cleanMobile}?text=Hello%20${encodeURIComponent(person.name)},%20connecting%20via%20Family%20Portal!` : '#';
+        const spouseWhatsappUrl = cleanSpouseMobile ? `https://wa.me/${cleanSpouseMobile}?text=Hello%20${encodeURIComponent(person.spouse || '')},%20connecting%20via%20Family%20Portal!` : '#';
 
         const relationText = getRelationshipLabel(person);
         const children = familyData.filter(p => p.parentId === person.id).sort((a, b) => (a.sequence || 1) - (b.sequence || 1));
 
         div.innerHTML = `
             <div class="person-info">
-                <h4>${person.name} ${person.spouse ? `& ${person.spouse}` : ''}</h4>
-                <p style="font-weight:600; color:var(--secondary); margin-bottom:4px;">${relationText}</p>
-                <p>📍 ${person.place || 'N/A'} | 📞 ${person.mobile || 'N/A'} ${person.email ? '| ✉️ ' + person.email : ''}</p>
+                <h4>
+                    ${person.name} ${person.spouse ? `& ${person.spouse}` : ''}
+                    ${!person.parentId ? '<span class="badge badge-founder">Ancestral Root</span>' : '<span class="badge badge-branch">Child #' + (person.sequence || 1) + '</span>'}
+                </h4>
+                <p style="font-weight:600; color:var(--secondary); margin-bottom:3px;">${relationText}</p>
+                <p>📍 ${person.place || person.location || 'Location: N/A'} ${person.occupation ? '| 💼 ' + person.occupation : ''}</p>
+                <p>📞 Mobile: ${person.mobile || 'N/A'} ${person.email ? '| ✉️ ' + person.email : ''}</p>
                 ${person.spouseMobile ? `<p>📞 Spouse Mobile: ${person.spouseMobile}</p>` : ''}
-                ${person.bio ? `<p style="margin-top: 6px; padding: 6px 8px; background: #f8fafc; border-radius: 4px; border-left: 3px solid var(--secondary); font-size: 0.85rem; white-space: pre-wrap;">📝 <b>Bio:</b> ${person.bio}</p>` : ''}
-                <p style="font-size: 0.75rem; color: #888; margin-top: 4px;">DOB: ${person.dob || 'N/A'} | Anniversary: ${person.wedding || 'N/A'}</p>
+                ${person.bio ? `<p style="margin-top: 5px; padding: 6px 10px; background: #f1f5f9; border-radius: 6px; border-left: 3px solid var(--secondary); font-size: 0.83rem; white-space: pre-wrap;">📝 <b>Bio:</b> ${person.bio}</p>` : ''}
+                <p style="font-size: 0.76rem; color: #64748b; margin-top: 4px;">
+                    ${person.dob ? '🎂 DOB: ' + person.dob : ''} ${person.wedding ? ' | 💍 Anniversary: ' + person.wedding : ''}
+                </p>
             </div>
             <div class="action-buttons"></div>
         `;
 
         const actionDiv = div.querySelector('.action-buttons');
         
+        // Show Branch expand/collapse toggle
         if(children.length > 0) {
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'btn-warning';
@@ -512,6 +1080,7 @@
             actionDiv.appendChild(toggleBtn);
         }
 
+        // WhatsApp button for Member
         if(cleanMobile) {
             const waBtn = document.createElement('button');
             waBtn.className = 'btn-whatsapp';
@@ -520,6 +1089,7 @@
             actionDiv.appendChild(waBtn);
         }
 
+        // WhatsApp button for Spouse
         if(cleanSpouseMobile && person.spouse) {
             const spouseWaBtn = document.createElement('button');
             spouseWaBtn.className = 'btn-whatsapp';
@@ -528,24 +1098,27 @@
             actionDiv.appendChild(spouseWaBtn);
         }
 
+        // Edit button
         if(canEditPerson(person)) {
             const editBtn = document.createElement('button');
             editBtn.className = 'btn-warning';
-            editBtn.textContent = 'Edit';
+            editBtn.textContent = '✏️ Edit';
             editBtn.onclick = () => editMember(person.id);
             actionDiv.appendChild(editBtn);
         }
 
-        if(currentUser.role === 'Admin') {
+        // Delete button for Super Admin
+        if(currentUser && (currentUser.role === 'Super Admin' || currentUser.role === 'Admin')) {
             const delBtn = document.createElement('button');
             delBtn.className = 'btn-danger';
-            delBtn.textContent = 'Delete';
+            delBtn.textContent = '🗑️ Delete';
             delBtn.onclick = () => deleteMember(person.id);
             actionDiv.appendChild(delBtn);
         }
 
         wrapper.appendChild(div);
 
+        // Children branches container
         if(children.length > 0) {
             const childContainer = document.createElement('div');
             childContainer.className = 'child-branch hidden';
@@ -586,7 +1159,7 @@
                     const bMonth = parseInt(parts[1]);
                     const bDay = parseInt(parts[2]);
                     if (bMonth === currentMonth && bDay >= currentDay) {
-                        birthdaysHTML += `<div class="event-item">🎁 <b>${p.name}</b><br>🎂 ${parts[2]}/${parts[1]}</div>`;
+                        birthdaysHTML += `<div class="event-item">🎁 <b>${p.name}</b><br><span style="color:var(--text-muted);">🎂 Date: ${parts[2]}/${parts[1]}</span></div>`;
                     }
                 }
             }
@@ -596,20 +1169,24 @@
                     const wMonth = parseInt(parts[1]);
                     const wDay = parseInt(parts[2]);
                     if (wMonth === currentMonth && wDay >= currentDay) {
-                        anniversariesHTML += `<div class="event-item">💍 <b>${p.name} ${p.spouse ? '& ' + p.spouse : ''}</b><br>📅 ${parts[2]}/${parts[1]}</div>`;
+                        anniversariesHTML += `<div class="event-item">💍 <b>${p.name} ${p.spouse ? '& ' + p.spouse : ''}</b><br><span style="color:var(--text-muted);">📅 Date: ${parts[2]}/${parts[1]}</span></div>`;
                     }
                 }
             }
         });
 
-        document.getElementById('upcomingBirthdays').innerHTML = birthdaysHTML || '<p style="font-size: 0.85rem; color: #666;">No birthdays listed for this month.</p>';
-        document.getElementById('upcomingAnniversaries').innerHTML = anniversariesHTML || '<p style="font-size: 0.85rem; color: #666;">No anniversaries listed for this month.</p>';
+        document.getElementById('upcomingBirthdays').innerHTML = birthdaysHTML || '<p style="font-size: 0.85rem; color: var(--text-muted);">No upcoming birthdays listed for this month.</p>';
+        document.getElementById('upcomingAnniversaries').innerHTML = anniversariesHTML || '<p style="font-size: 0.85rem; color: var(--text-muted);">No upcoming anniversaries listed for this month.</p>';
     }
 
-    function openAddForm() {
+    // ==========================================================
+    // POPUP MODAL LOGIC (Appears first/center in popup window)
+    // ==========================================================
+    window.openMemberModal = function(parentId = null) {
         document.getElementById('editMemberId').value = '';
-        document.getElementById('memberParentId').value = '';
+        document.getElementById('memberParentId').value = parentId || '';
         document.getElementById('memberName').value = '';
+        document.getElementById('memberGender').value = 'Male';
         document.getElementById('memberSpouse').value = '';
         document.getElementById('memberMobile').value = '';
         document.getElementById('memberSpouseMobile').value = '';
@@ -618,21 +1195,29 @@
         document.getElementById('memberWedding').value = '';
         document.getElementById('memberEmail').value = '';
         document.getElementById('memberPlace').value = '';
+        document.getElementById('memberNative').value = '';
+        document.getElementById('memberOccupation').value = '';
         document.getElementById('memberBio').value = '';
-        document.getElementById('formTitle').textContent = "Add New Family Branch / Follower";
-        document.getElementById('editSection').classList.remove('hidden');
+        document.getElementById('formTitle').textContent = "Add New Family Member / Branch";
+        
+        const overlay = document.getElementById('memberModalOverlay');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => document.getElementById('memberName').focus(), 150);
     }
 
-    function editMember(id) {
+    window.editMember = function(id) {
         const person = familyData.find(p => p.id === id);
         if(!person) return;
         if(!canEditPerson(person)) {
-            alert("Permission denied. You can only edit your own record or your descendants' records.");
+            alert("Permission Denied: You can only edit your own profile or your direct family descendants.");
             return;
         }
+
         document.getElementById('editMemberId').value = person.id;
         document.getElementById('memberParentId').value = person.parentId || '';
         document.getElementById('memberName').value = person.name || '';
+        document.getElementById('memberGender').value = person.gender || 'Male';
         document.getElementById('memberSpouse').value = person.spouse || '';
         document.getElementById('memberMobile').value = person.mobile || '';
         document.getElementById('memberSpouseMobile').value = person.spouseMobile || '';
@@ -640,14 +1225,22 @@
         document.getElementById('memberDob').value = person.dob || '';
         document.getElementById('memberWedding').value = person.wedding || '';
         document.getElementById('memberEmail').value = person.email || '';
-        document.getElementById('memberPlace').value = person.place || '';
+        document.getElementById('memberPlace').value = person.place || person.location || '';
+        document.getElementById('memberNative').value = person.native || '';
+        document.getElementById('memberOccupation').value = person.occupation || '';
         document.getElementById('memberBio').value = person.bio || '';
-        document.getElementById('formTitle').textContent = "Edit Family Branch";
-        document.getElementById('editSection').classList.remove('hidden');
+        document.getElementById('formTitle').textContent = `Edit Profile: ${person.name}`;
+        
+        const overlay = document.getElementById('memberModalOverlay');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => document.getElementById('memberName').focus(), 150);
     }
 
-    function cancelForm() {
-        document.getElementById('editSection').classList.add('hidden');
+    window.closeMemberModal = function() {
+        const overlay = document.getElementById('memberModalOverlay');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
     }
 
     async function saveMemberData(e) {
@@ -656,7 +1249,7 @@
         const spouseMobileVal = document.getElementById('memberSpouseMobile').value.trim();
 
         if(!mobileVal || mobileVal.length < 10) {
-            alert("Error: A valid primary mobile number (at least 10 digits) is required.");
+            alert("Error: A valid primary mobile number (at least 10 digits) is required for verification.");
             return;
         }
 
@@ -673,6 +1266,7 @@
         
         const memberData = {
             name: document.getElementById('memberName').value.trim(),
+            gender: document.getElementById('memberGender').value,
             spouse: document.getElementById('memberSpouse').value.trim(),
             mobile: mobileVal,
             spouseMobile: spouseMobileVal,
@@ -681,21 +1275,28 @@
             wedding: document.getElementById('memberWedding').value,
             email: document.getElementById('memberEmail').value.trim(),
             place: document.getElementById('memberPlace').value.trim(),
+            native: document.getElementById('memberNative').value.trim(),
+            occupation: document.getElementById('memberOccupation').value.trim(),
             bio: document.getElementById('memberBio').value.trim(),
             parentId: parentId
         };
 
+        const saveBtn = document.getElementById('saveMemberBtn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving...";
+
         try {
             if(id) {
                 await updateDoc(doc(db, "familyTree", id), memberData);
-                alert("Branch updated successfully!");
+                alert("Family profile updated successfully!");
             } else {
                 const newId = "member-" + Date.now();
                 await setDoc(doc(db, "familyTree", newId), memberData);
-                alert("New family follower/branch added successfully!");
+                alert("New family member added successfully!");
             }
-            document.getElementById('editSection').classList.add('hidden');
+            closeMemberModal();
             
+            // Reload fresh tree
             const querySnapshot = await getDocs(collection(db, "familyTree"));
             familyData = [];
             querySnapshot.forEach((document) => {
@@ -707,19 +1308,22 @@
             calculateUpcomingEvents();
         } catch (err) {
             console.error("Save error:", err);
-            alert("Error saving record. Check Firestore security rules.");
+            alert("Error saving record: " + (err.message || "Please check Firestore database rules."));
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = "💾 Save Family Member";
         }
     }
 
     async function deleteMember(id) {
-        if(currentUser.role !== 'Admin') {
-            alert("Permission denied. Only Admin can delete records.");
+        if(!currentUser || (currentUser.role !== 'Super Admin' && currentUser.role !== 'Admin')) {
+            alert("Permission denied: Only Admin can delete family records.");
             return;
         }
-        if(confirm("Are you sure you want to delete this member and their branch record?")) {
+        if(confirm("Are you sure you want to delete this member and their recorded details?")) {
             try {
                 await deleteDoc(doc(db, "familyTree", id));
-                alert("Record deleted.");
+                alert("Record deleted successfully.");
                 const querySnapshot = await getDocs(collection(db, "familyTree"));
                 familyData = [];
                 querySnapshot.forEach((document) => {
@@ -738,31 +1342,54 @@
 
     function renderDirectory() {
         const dirList = document.getElementById('directoryList');
+        const query = (document.getElementById('dirSearchInput').value || '').toLowerCase().trim();
         dirList.innerHTML = '';
-        familyData.forEach(p => {
+
+        const filtered = familyData.filter(p => {
+            if (!query) return true;
+            return (p.name && p.name.toLowerCase().includes(query)) ||
+                   (p.spouse && p.spouse.toLowerCase().includes(query)) ||
+                   (p.place && p.place.toLowerCase().includes(query)) ||
+                   (p.native && p.native.toLowerCase().includes(query)) ||
+                   (p.occupation && p.occupation.toLowerCase().includes(query)) ||
+                   (p.mobile && p.mobile.includes(query)) ||
+                   (p.bio && p.bio.toLowerCase().includes(query));
+        });
+
+        if(filtered.length === 0) {
+            dirList.innerHTML = '<p style="color:var(--text-muted); padding:10px;">No matching family members found.</p>';
+            return;
+        }
+
+        filtered.forEach(p => {
             const cleanMobile = p.mobile ? p.mobile.replace(/[^0-9]/g, '') : '';
             const cleanSpouseMobile = p.spouseMobile ? p.spouseMobile.replace(/[^0-9]/g, '') : '';
             
-            const whatsappUrl = cleanMobile ? `https://wa.me/${cleanMobile}?text=Hello%20${encodeURIComponent(p.name)},%20connecting%20via%20Raj%20Family%20Portal!` : '#';
-            const spouseWhatsappUrl = cleanSpouseMobile ? `https://wa.me/${cleanSpouseMobile}?text=Hello%20${encodeURIComponent(p.spouse)},%20connecting%20via%20Raj%20Family%20Portal!` : '#';
+            const whatsappUrl = cleanMobile ? `https://wa.me/${cleanMobile}?text=Hello%20${encodeURIComponent(p.name)},%20connecting%20via%20Family%20Portal!` : '#';
+            const spouseWhatsappUrl = cleanSpouseMobile ? `https://wa.me/${cleanSpouseMobile}?text=Hello%20${encodeURIComponent(p.spouse || '')},%20connecting%20via%20Family%20Portal!` : '#';
 
             const relationText = getRelationshipLabel(p);
 
             const card = document.createElement('div');
             card.className = 'person-card';
             card.innerHTML = `
-                <div>
-                    <h4>${p.name} ${p.spouse ? '& ' + p.spouse : ''}</h4>
-                    <p style="font-weight:600; color:var(--secondary); margin-bottom:4px;">${relationText}</p>
-                    <p>📍 Place: ${p.place || 'N/A'}</p>
-                    <p>📞 Mobile: ${p.mobile || 'N/A'} ${p.email ? '| ✉️ ' + p.email : ''}</p>
+                <div class="person-info">
+                    <h4>
+                        ${p.name} ${p.spouse ? '& ' + p.spouse : ''}
+                        ${!p.parentId ? '<span class="badge badge-founder">Ancestral Root</span>' : '<span class="badge badge-branch">Branch Member</span>'}
+                    </h4>
+                    <p style="font-weight:600; color:var(--secondary); margin-bottom:3px;">${relationText}</p>
+                    <p>📍 Location: ${p.place || p.location || 'N/A'} ${p.native ? '(Native: ' + p.native + ')' : ''}</p>
+                    <p>💼 Occupation: ${p.occupation || 'N/A'} | 📞 Mobile: ${p.mobile || 'N/A'} ${p.email ? '| ✉️ ' + p.email : ''}</p>
                     ${p.spouseMobile ? `<p>📞 Spouse Mobile: ${p.spouseMobile}</p>` : ''}
-                    ${p.bio ? `<p style="margin-top: 6px; padding: 6px 8px; background: #f8fafc; border-radius: 4px; border-left: 3px solid var(--secondary); font-size: 0.85rem; white-space: pre-wrap;">📝 <b>Bio:</b> ${p.bio}</p>` : ''}
-                    <p style="font-size: 0.75rem; color: #888; margin-top: 4px;">🎂 DOB: ${p.dob || 'N/A'} | 💍 Anniversary: ${p.wedding || 'N/A'}</p>
+                    ${p.bio ? `<p style="margin-top: 5px; padding: 6px 10px; background: #f1f5f9; border-radius: 6px; border-left: 3px solid var(--secondary); font-size: 0.83rem; white-space: pre-wrap;">📝 <b>Bio:</b> ${p.bio}</p>` : ''}
+                    <p style="font-size: 0.76rem; color: #64748b; margin-top: 4px;">
+                        ${p.dob ? '🎂 DOB: ' + p.dob : ''} ${p.wedding ? ' | 💍 Anniversary: ' + p.wedding : ''}
+                    </p>
                 </div>
-                <div class="dir-actions"></div>
+                <div class="action-buttons"></div>
             `;
-            const actionDiv = card.querySelector('.dir-actions');
+            const actionDiv = card.querySelector('.action-buttons');
             if(cleanMobile) {
                 const waBtn = document.createElement('button');
                 waBtn.className = 'btn-whatsapp';
@@ -777,6 +1404,13 @@
                 spouseWaBtn.onclick = () => window.open(spouseWhatsappUrl, '_blank');
                 actionDiv.appendChild(spouseWaBtn);
             }
+            if(canEditPerson(p)) {
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn-warning';
+                editBtn.textContent = '✏️ Edit';
+                editBtn.onclick = () => editMember(p.id);
+                actionDiv.appendChild(editBtn);
+            }
             dirList.appendChild(card);
         });
     }
@@ -785,21 +1419,34 @@
         document.getElementById('treeView').classList.add('hidden');
         document.getElementById('directoryView').classList.add('hidden');
         document.getElementById('messageBoardView').classList.add('hidden');
+        document.getElementById('userManualView').classList.add('hidden');
+
+        document.getElementById('navTree').classList.remove('active');
+        document.getElementById('navDir').classList.remove('active');
+        document.getElementById('navMsg').classList.remove('active');
+        document.getElementById('navManual').classList.remove('active');
 
         if(view === 'tree') {
             document.getElementById('treeView').classList.remove('hidden');
+            document.getElementById('navTree').classList.add('active');
         } else if(view === 'directory') {
             document.getElementById('directoryView').classList.remove('hidden');
+            document.getElementById('navDir').classList.add('active');
+            renderDirectory();
         } else if(view === 'messageBoard') {
             document.getElementById('messageBoardView').classList.remove('hidden');
+            document.getElementById('navMsg').classList.add('active');
             loadFamilyMessages();
+        } else if(view === 'userManual') {
+            document.getElementById('userManualView').classList.remove('hidden');
+            document.getElementById('navManual').classList.add('active');
         }
     }
 
     async function sendBroadcast() {
         const msg = document.getElementById('broadcastMessage').value.trim();
         if(!msg) {
-            alert("Please enter a message.");
+            alert("Please type a message before posting.");
             return;
         }
         try {
@@ -808,38 +1455,40 @@
                 text: msg,
                 timestamp: serverTimestamp()
             });
-            alert("Message posted to Live Family Message Board successfully!");
+            alert("Message posted to Live Family Community Board successfully!");
             document.getElementById('broadcastMessage').value = '';
             
-            if(confirm("Would you also like to share this message to the Raj Family WhatsApp Group?")) {
+            if(confirm("Would you also like to share this message to the Family WhatsApp Group?")) {
                 window.open("https://chat.whatsapp.com/EReMxxYP82JG5t2EShzw99?s=cl&p=a&iam=2&text=" + encodeURIComponent(msg), "_blank");
             }
 
             loadFamilyMessages();
         } catch (e) {
             console.error("Error posting message:", e);
-            alert("Error posting message. Check Firestore security rules.");
+            alert("Error posting message. Please verify Firestore database rules.");
         }
     }
 
     async function loadFamilyMessages() {
         const feed = document.getElementById('messageBoardFeed');
         if(!feed) return;
-        feed.innerHTML = '<p style="font-size:0.85rem; color:#666;">Loading messages...</p>';
+        feed.innerHTML = '<p style="font-size:0.85rem; color:var(--text-muted);">Loading live messages...</p>';
         try {
             const q = query(collection(db, "familyMessages"), orderBy("timestamp", "desc"));
             const querySnapshot = await getDocs(q);
             let html = '';
             if(querySnapshot.empty) {
-                html = '<p style="font-size:0.85rem; color:#666;">No messages posted yet. Be the first to share something!</p>';
+                html = '<p style="font-size:0.85rem; color:var(--text-muted);">No messages posted yet. Be the first to share an update or greeting!</p>';
             } else {
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     const timeStr = data.timestamp && data.timestamp.toDate ? data.timestamp.toDate().toLocaleString() : 'Just now';
                     html += `
-                        <div style="background:#f1f5f9; padding:12px; border-radius:6px; border-left:4px solid var(--secondary);">
-                            <p style="margin:0 0 4px 0; font-size:0.8rem; color:#555;"><b>${data.sender}</b> • <span style="font-size:0.75rem; color:#888;">${timeStr}</span></p>
-                            <p style="margin:0; font-size:0.95rem; color:#333; white-space: pre-wrap;">${data.text}</p>
+                        <div style="background:#f8fafc; padding:12px 14px; border-radius:8px; border-left:4px solid var(--secondary); border: 1px solid var(--border);">
+                            <p style="margin:0 0 4px 0; font-size:0.82rem; color:#475569;">
+                                <b>${data.sender}</b> • <span style="font-size:0.75rem; color:#94a3b8;">${timeStr}</span>
+                            </p>
+                            <p style="margin:0; font-size:0.92rem; color:var(--text); white-space: pre-wrap;">${data.text}</p>
                         </div>
                     `;
                 });
@@ -847,7 +1496,7 @@
             feed.innerHTML = html;
         } catch (e) {
             console.error("Error loading messages:", e);
-            feed.innerHTML = '<p style="font-size:0.85rem; color:#e74c3c;">Error loading messages. Ensure your Firestore rules allow reading `familyMessages`.</p>';
+            feed.innerHTML = '<p style="font-size:0.85rem; color:var(--danger);">Error loading messages. Check Firestore rules for `familyMessages`.</p>';
         }
     }
 </script>

@@ -1,33 +1,48 @@
-### Raj Family – Family Connection & Genealogy Platform
+# 🌳 FamilyRoots • Multi-Generational Family Heritage & Connect Portal
 
-Raj Family is a family networking and genealogy web application designed to bring family members together, preserve family history, strengthen relationships, and maintain meaningful connections across generations.
+> **Discover Your Roots. Connect Your Generations.**  
+> A multi-generational genealogy, family-tree creation, and family heritage network platform for extended and vast family groups.
 
-The platform allows family members to create, update, and explore their family genealogy, maintain personal profiles and contact information, discover family relationships, and communicate with other family members through chat and discussions.
+---
 
-It serves as a common digital meeting place where every family member can participate, share information, stay connected, and contribute to building a stronger family community.
+## 📖 Project Overview
 
-### Key Features
+**FamilyRoots** is a complete family heritage platform designed to preserve lineage records, celebrate family milestones, and connect distributed family branches across generations. It accommodates vast family networks across various branches and regions without limiting scope to any single family group.
 
-* Family Genealogy: Create, maintain, and update the family tree, including parents, children, siblings, spouses, and extended relatives.
+This project repository contains:
+1. **Interactive Web Application (`index.html`)**: Fully functional client-side heritage portal connected to Firebase Cloud Firestore for real-time synchronization.
+2. **Comprehensive Technical Blueprint (`FamilyRoots_Complete_Project_Blueprint.docx`)**: A 22-section enterprise-grade product specification covering system architecture, privacy rules, data modeling, ER diagrams, REST APIs, and rollout milestones.
+3. **One-Click Launcher (`OPEN_FAMILYROOT_PORTAL.bat`)**: Quick desktop launcher.
 
-* Member Profiles: Add and update personal details, photographs, birthdays, addresses, and contact information.
+---
 
-* Family Relationships: Easily identify and understand relationships between family members across generations.
+## ✨ Live Web Application Features (`index.html`)
 
-* Family Chat: Communicate with individual members and family groups through messaging.
+The interactive web portal features a modern, accessible responsive interface:
 
-* Family Updates: Share important news, celebrations, achievements, announcements, and family events.
+| Module / Feature | Capabilities |
+| :--- | :--- |
+| **🌳 Family Tree & Lineage** | Hierarchical ancestral tree, collapsible branches (`Show Branch` / `Hide Branch`), birth sequence ordering, and node cards |
+| **✨ Front-and-Center Popup Modal** | Add & Edit form opens in a prominent, centered popup modal dialog with blurred backdrop instead of hidden at the bottom |
+| **📘 Comprehensive User Manual** | Step-by-step interactive manual with bilingual guidance for non-technical and elderly family members |
+| **📖 Members Directory & Live Search** | Real-time searchable member catalog with instant filtering by name, spouse, native place, current city, and occupation |
+| **💬 Direct WhatsApp Integration** | 1-click private WhatsApp chat for both members and their spouses, plus direct link to join the Family WhatsApp Group |
+| **🎂 Upcoming Birthdays & Anniversaries** | Automatic real-time detection of celebrations and milestones occurring this month |
+| **📢 Live Community Board** | Real-time broadcast messages, blessings, and announcements stored in Firestore with optional WhatsApp sharing |
 
-* Family Directory: Find and connect with relatives using their names, locations, and contact details.
+---
 
-* Family Participation: Allow members to contribute information, correct records, and keep the family history updated.
+## ☁️ Cloud Backend Configuration
 
-* Stronger Relationships: Encourage love, unity, mutual support, communication, and a sense of belonging among family members.
+The application is pre-configured with Firebase Firestore for persistent cloud storage:
+- **Firebase Project ID**: `raj-family-33299`
+- **Firestore Collections**:
+  - `familyTree`: Individual family profiles, parent IDs, birth dates, photos, and generation numbers.
+  - `familyMessages`: Community board broadcast posts, sender emails, and timestamps.
 
-### Our Vision
+---
 
-"One Family, Many Generations, One Strong Connection."
+## 🚀 Quick Launch
 
-Raj Family aims to preserve our roots, connect our present generation, and build a lasting legacy for future generations. No matter where family members live, this platform helps everyone remain connected as one family.
-
-Our family is our heritage. Our relationships are our strength. Our unity is our legacy.
+- **Double-click [`OPEN_FAMILYROOT_PORTAL.bat`](file:///e:/MYWORKSPACE/familyroot/OPEN_FAMILYROOT_PORTAL.bat)** to immediately launch `index.html` in your default web browser.
+- **Direct Web Access**: Open `index.html` directly in any web browser.
